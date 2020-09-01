@@ -5,3 +5,9 @@ body {
     /* background-color: #292b2c; 
     color: whitesmoke;*/
 }
+
+.list-group-item {
+    border: none;
+    padding: 0px;
+    margin: 5px 0px;
+}
