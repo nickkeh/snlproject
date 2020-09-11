@@ -1,3 +1,5 @@
+document.querySelector('#due-date').value = new Date().toISOString().substring(0, 10);
+
 /************************Validate input************************/
 // Name -> Not Empty and longer than 8 characters
 // Description -> Not Empty and longer than 15 characters
@@ -9,8 +11,6 @@ const validateTaskForm = () => {
     const name = document.querySelector('#name');
     const description = document.querySelector('#description');
     const assignedTo = document.querySelector('#assigned-to');
-    const dueDate = document.querySelector('#due-date');
-    console.log(name.length !== 0 && name.length <= 8);
 
     if(name.value.length !== 0 && name.value.length <= 8) {
         name.classList.add('is-valid');
@@ -38,16 +38,6 @@ const validateTaskForm = () => {
         assignedTo.classList.add('is-invalid');
         assignedTo.classList.remove('is-valid');
     }
-    
-
-    // if(duedate != undefined)  {
-    //     dueDate.classList.add('is-valid');
-    //     dueDate.classList.remove('is-invalid');
-    // }
-    // else {
-    //     dueDate.classList.add('is-invalid');
-    //     dueDate.classList.remove('is-valid');
-    // }
 }
 
 document.querySelector('#create-task').addEventListener('submit', (event) => {
@@ -60,4 +50,20 @@ document.querySelector('#create-task').addEventListener('submit', (event) => {
      
     // document.querySelector('#hobby-list').appendChild(item);
     // document.querySelector('#form-hobby-text').value = "";
+}, true);
+
+let dueDate = document.querySelector('#due-date');
+dueDate.addEventListener('change', (event) => {
+    event.preventDefault();
+   
+    const pickedDate = dueDate.value;
+    const today = new Date().toISOString().substring(0, 10);;
+    if(pickedDate >= today) {
+        dueDate.classList.add('is-valid');
+        dueDate.classList.remove('is-invalid');
+    }
+    else {
+        dueDate.classList.add('is-invalid');
+        dueDate.classList.remove('is-valid');
+    }
  }, true);
