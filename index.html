@@ -9,33 +9,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
     <div class="container">
         <nav class="navbar navbar-dark bg-dark navbar-expand-lg fixed-top py-0 mb-auto">
-            <a href="#" class="navbar-brand d-none d-md-block">snl-project</a>
-            <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="navbar-item">
-                        <a href="#" class="nav-link">Home</a>
-                    </li>
-                    <li class="navbar-item">
-                        <a href="./create-task.html" class="nav-link">Create Tasks</a>
-                    </li>
-                    <li class="navbar-item">
-                        <a href="#" class="nav-link">About us</a>
-                    </li>
-                </ul>
-            </div>
-            <form class="form-inline d-md-block d-none my-2 my-lg-0">
-                <input class="form-control mr-sm-2 py-0" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-            </form>
-            <button class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>
         </nav>
 
         <section>
@@ -43,16 +22,18 @@
             <div class="row justify-content-between my-3">
                 <form class="form-inline col-10">
                     <div class="form-group">
-                        <label for="date">Choose date &nbsp;</label>
-                        <input id="date" class="form-control" type="date" />
+                        <label for="select-date">Choose date &nbsp;</label>
+                        <input id="select-date" class="form-control" type="date" />
                     </div>
                 </form>
                 <button class="btn btn-dark d-none d-md-block mr-3">New Task</button>
             </div>
+        </section>
 
-            <div class="list-group">
+        <section>
+            <div id="todo-list" class="list-group">
                 <a href="./create-task.html" class="list-group-item list-group-item-action">
-                    <div class="card text-danger border-danger mb-2 shadow overlow-hidden">
+                    <div class="card text-danger border-danger mb-2 shadow">
                         <div class="card-header bg-transparent d-flex justify-content-between">
                             <p>Due Date: <date>01/09/20</date></p>
                             <p>Review</p>
@@ -82,7 +63,7 @@
                     </div>
                 </a>
                 <a href="./create-task.html" class="list-group-item list-group-item-action">
-                    <div class="card text-primary border-primary mb-2 shadow overlow-hidden">
+                    <div class="card text-primary border-primary mb-2 shadow">
                         <div class="card-header bg-transparent d-flex justify-content-between">
                             <p>Due Date: <date>01/09/20</date></p>
                             <p>To do</p>
