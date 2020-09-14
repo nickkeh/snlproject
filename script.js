@@ -1,27 +1,33 @@
 //Create navbar for every pages
-document.querySelector('nav').innerHTML = 
-'<a href="#" class="navbar-brand d-none d-md-block">snl-project</a>' +
-'<button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">' +
-    '<span class="navbar-toggler-icon"></span>' +
-'</button>' +
-'<div class="collapse navbar-collapse" id="navbarCollapse">' +
-    '<ul class="navbar-nav mr-auto">' +
-        '<li class="navbar-item">' +
-            '<a href="./index.html" class="nav-link">Home</a>' +
-        '</li>' +
-        '<li class="navbar-item">' +
-            '<a href="./create-task.html" class="nav-link">Create Tasks</a>' +
-        '</li>' +
-        '<li class="navbar-item">' +
-            '<a href="./contact-us.html" class="nav-link">Contact Us</a>' +
-        '</li>' +
-    '</ul>' +
-'</div>' +
-'<form class="form-inline d-md-block d-none my-2 my-lg-0">' +
-    '<input class="form-control mr-sm-2 py-0" type="search" placeholder="Search" aria-label="Search">' +
-    '<button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Search</button>' +
-'</form>' +
-'<button class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>';
+let navbar = document.querySelector('nav');
+if(navbar) {
+    navbar.innerHTML = 
+    '<a href="#" class="navbar-brand d-none d-md-block">snl-project</a>' +
+    '<button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">' +
+        '<span class="navbar-toggler-icon"></span>' +
+    '</button>' +
+    '<div class="collapse navbar-collapse" id="navbarCollapse">' +
+        '<ul class="navbar-nav mr-auto">' +
+            '<li class="navbar-item">' +
+                '<a href="./index.html" class="nav-link">Home</a>' +
+            '</li>' +
+            '<li class="navbar-item">' +
+                '<a href="./create-task.html" class="nav-link">Create Tasks</a>' +
+            '</li>' +
+            '<li class="navbar-item">' +
+                '<a href="./contact-us.html" class="nav-link">Contact Us</a>' +
+            '</li>' +
+        '</ul>' +
+    '</div>' +
+    '<form class="form-inline d-md-block d-none my-2 my-lg-0">' +
+        '<input class="form-control mr-sm-2 py-0" type="search" placeholder="Search" aria-label="Search">' +
+        '<button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Search</button>' +
+    '</form>' +
+    '<button class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>';
+    navbar.classList.add('navbar', 'navbar-dark', 'bg-dark', 'navbar-expand-lg', 'fixed-top', 'py-0', 'mb-auto');
+}
+
+
 
 /************************************ Task 4 ************************************/
 // Name -> Not Empty and longer than 8 characters
@@ -143,7 +149,7 @@ const createTodoItem = (id, name, description, assignedTo, dueDate, status) => {
        const itemDeleteButton = document.createElement('button');
        itemDeleteButton.innerHTML = '<i class="fa fa-trash-o"></i>';
        itemDeleteButton.classList.add('btn', 'btn-outline-danger');
-       itemDeleteButton.addEventListener('click', () => deleteTodoItem(item.id));
+       itemDeleteButton.addEventListener('click', (event) => deleteTodoItem(item.id, event));
 
        itemCardFooter.appendChild(itemAssignedTo);
        itemCardFooter.appendChild(itemDeleteButton);
@@ -158,7 +164,8 @@ const createTodoItem = (id, name, description, assignedTo, dueDate, status) => {
   }
 };
 
-const deleteTodoItem = (id) => {
+const deleteTodoItem = (id, event) => {
+    // event.preventDefault();
     if(document.querySelector('#' + id)) 
         document.querySelector('#' + id).remove()
 };
@@ -260,6 +267,9 @@ if(document.querySelector('#create-task')) {
         if(validateTaskForm()) {
             window.location.href = 'index.html';
             console.log(document.querySelector('#todo-list'));
+            window.location.reload = 'index.html';
+            console.log(document.querySelector('#todo-list'));
+
             // addTask(name.value, description.value, assignedTo.options[assignedTo.selectedIndex].value, dueDate.value, status);
         }
     }, true);
