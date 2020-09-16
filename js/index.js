@@ -119,8 +119,8 @@ const loadUpdateTaskForm = task => {
 // #endregion
 
 
-const taskHtml = createTaskHtml('task1', 'description 1', 'Susanti', '2020-09-18', 'To Do'); 
-console.log(taskHtml);
+// const taskHtml = createTaskHtml('task1', 'description 1', 'Susanti', '2020-09-18', 'To Do'); 
+// console.log(taskHtml);
 
 /************************************ Event Listeners ************************************/
 if(document.querySelector('#add-button')) {

@@ -95,15 +95,15 @@ let TaskManager = class  {
 
     render() {
         let tasksHtmlList = [];
+        let tasksHtml = ''; 
         this.tasks.map(task => {
-            const date = newDate(task.dueDate);
+            const date = new Date(task.dueDate);
             const formattedDate = date.toISOString().substring(0, 10);
             const taskHtml = createTaskHtml(task.name, task.description, task.assignedTo, formattedDate, task.dueDate);
             tasksHtmlList.push(taskHtml);
-        });
-
-        // const tasksHtml 
-    }
+            tasksHtml += (taskHtml + '\n');
+         });
+   }
 }
 
 // #endregion
@@ -148,7 +148,7 @@ taskList.addTask(task4);
 
 /******************** CRUD -> Read ********************/
 
-taskList.getAllTasks();
+// taskList.getAllTasks();
 
 // taskList.getAllTasksWithStatus('To Do');
 // console.log(taskList.getAllTasksWithStatus('To Do'));
@@ -171,7 +171,9 @@ updatedTask.status = 'To Do';
 taskList.updateTask('todo3', updatedTask);
 // taskList.assignTask('todo1', 'Edison')
 
-// console.log(taskList.getAllTasks());
+//console.log(taskList.getAllTasks());
+
+taskList.render();
 
 // #endregion
 
