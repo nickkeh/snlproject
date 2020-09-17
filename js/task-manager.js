@@ -3,7 +3,7 @@
 
 const setTaskStatusColor = (dueDate, status) => {
     let itemColor = ''; 
-    if(dueDate >= new Date().toISOString().substring(0, 10))
+    if(dueDate >= new Date().toISOString().substring(0, 10) && status.replace(/\s/g, '') !== 'ToDo')
         itemColor = 'danger';
     else if(status.replace(/\s/g, '') === 'ToDo')
         itemColor = 'info';
@@ -67,6 +67,15 @@ let TaskManager = class  {
         this.tasks = [];
         this.currentId = this.tasks.length + 1;
     }
+
+    // function that retrieves only tasks with status that matches the selected status. 
+    searchTask = keyword => this.tasks.filter(task =>
+        task.name ===  keyword ||
+        task.description ===  keyword || 
+        task.dueDate ===  keyword || 
+        task.assignedTo ===  keyword || 
+        task.status ===  keyword
+    );
 
     // functions that add a new task object into the tasks array.   
     addTask = task => {
@@ -162,7 +171,7 @@ const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To D
 const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-15', 'In Progress');
 const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-18', 'Review');
 const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done');
-const task5 = new Task('task 5', 'description 5', 'Group', '2020-09-12', 'To Do');
+const task5 = new Task('task 5', 'z', 'Group', '2020-09-12', 'To Do');
 
 //#endregion
 

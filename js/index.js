@@ -58,6 +58,15 @@ const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
         return false;
 };
 
+const clearTaskForm = (name, description, assignedTo, dueDate, status) => {
+    name.value = '';
+    description.value = '';
+    assignedTo.value = '';
+    const today = new Date().toISOString().substring(0, 10);
+    dueDate.value = today;
+    status.selectedIndex = 0;
+}
+
 // #endregion
 
 
@@ -66,6 +75,21 @@ const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
 
 /************************************ Event Listeners ************************************/
 // #region 
+
+const displayTaskList = () => {
+    document.querySelector('#tasks').classList.add('d-block');    
+    document.querySelector('#tasks').classList.remove('d-none');    
+    document.querySelector('#create-task').classList.add('d-none');
+    document.querySelector('#create-task').classList.remove('d-block');    
+};
+
+const displayCreateTask = () => {
+    document.querySelector('#tasks').classList.add('d-none');
+    document.querySelector('#tasks').classList.remove('d-block');
+    document.querySelector('#create-task').classList.add('d-block');
+    document.querySelector('#create-task').classList.remove('d-none');
+};
+
 const addButton = document.querySelector('#add-button');
 if(addButton) {
     addButton.addEventListener('click', (event) => {
@@ -77,7 +101,28 @@ if(addButton) {
         const status = document.querySelector('#status');
 
         clearTaskForm(name, description, assignedTo, dueDate, status);
+
+        displayCreateTask();
     }, true);
+};
+
+const cancelNewTask = () => {
+    const name = document.querySelector('#name');
+    const description = document.querySelector('#description');
+    const assignedTo = document.querySelector('#assigned-to');
+    const dueDate = document.querySelector('#due-date');
+    const status = document.querySelector('#status');
+
+    clearTaskForm(name, description, assignedTo, dueDate, status);
+    const formInputs = createTaskForm.querySelectorAll('.form-control');
+    formInputs.forEach(element => {
+        if(element.classList.contains('is-valid'))
+            element.classList.remove('is-valid');
+        if(element.classList.contains('is-invalid'))
+            element.classList.remove('is-invalid');
+   });
+
+    displayTaskList();
 };
 
 const createTaskForm = document.forms['create-task-form'];
@@ -93,27 +138,27 @@ if(createTaskForm) {
 
         const newTask = validateTaskForm(name, description, assignedTo, dueDate, status);
 
-        if(newTask) 
+        if(newTask){
             taskList.addTask(newTask);
+            
+            displayTaskList();
 
+            const formInputs = createTaskForm.querySelectorAll('.form-control');
+            formInputs.forEach(element => {
+                if(element.classList.contains('is-valid'))
+                    element.classList.remove('is-valid');
+                if(element.classList.contains('is-invalid'))
+                    element.classList.remove('is-invalid');
+                   });
+
+            clearTaskForm(name, description, assignedTo, dueDate, status);
+        }
+        else return false;
+        
         taskList.render();
-       
-        const formInputs = createTaskForm.querySelectorAll('.form-control');
-        formInputs.forEach(element => {
-            if(element.classList.contains('is-valid'))
-                element.classList.remove('is-valid');
-        });
 
-        name.value = '';
-        description.value = '';
-        assignedTo.value = '';
-        const today = new Date().toISOString().substring(0, 10);
-        dueDate.value = today;
-        status.selectedIndex = 0;
-    
     });
 };
-
 
 const taskListGroup = document.querySelector('#task-list');
 if(taskListGroup) {
@@ -137,8 +182,6 @@ if(taskListGroup) {
 let inputSelectStatus = document.querySelector('#select-status');
 if(inputSelectStatus) {
     inputSelectStatus.addEventListener('change', (event) => {
-        event.preventDefault();
-        
         let selectedStatus = event.target.value;
         if(selectedStatus === 'Select...') {
             taskList.getAllTasks();
@@ -148,10 +191,31 @@ if(inputSelectStatus) {
             taskList.getAllTasksWithStatus(selectedStatus);
             taskList.render();
         }
-
-        console.log(taskList.getAllTasksWithStatus(selectedStatus));
-
     }, true);
 };
 
+const searchForm = document.forms['search-form'];
+if(searchForm) { 
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const searchInput = searchForm.querySelector('input').value;
+        taskList.searchTask(searchInput);
+        // console.log(taskList.searchTask(searchInput));
+        taskList.render();
+    });
+};
+
+let inputOnEnter = document.forms['search-form'].querySelector('input');
+if(inputOnEnter) {
+    inputOnEnter.addEventListener('keyup', (event) => {
+        if(event.keyCode === 13 || event.key === "Enter") {
+            event.preventDefault();
+
+            const searchInput = searchForm.querySelector('input').value;
+            taskList.searchTask(searchInput);
+            taskList.render();
+        }
+    });
+}
 // #endregion
