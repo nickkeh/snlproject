@@ -7,17 +7,18 @@ const createTaskHtml = (name, description, assignedTo, dueDate, status) => {
     `<a href="#/update-task" class="list-group-item list-group-item-action">
         <div class="card text-danger border-danger mb-2 shadow">
             <div class="card-header bg-transparent d-flex justify-content-between">
-                <p>Due Date: <date>${dueDate}</date></p>
-                <p>${status}</p>
+                <p>${status}</p>                
+                <button class='done-button'>Mark as Done</button>
             </div>
             <div class="card-body">
+                <p>Due Date: <date>${dueDate}</date></p>
                 <h5 class="card-title">${name}</h5>
                 <p class="card-text">${description}</p>
             </div>
             <div class="card-footer bg-transparent d-flex justify-content-between">
                 <h6>${assignedTo}</h6>
                 <button>Delete</button>
-            </div>
+            </div>  
         </div>
     </a>`;
 
@@ -96,14 +97,21 @@ let TaskManager = class  {
     render() {
         let tasksHtmlList = [];
         let tasksHtml = ''; 
+
         this.tasks.map(task => {
             const date = new Date(task.dueDate);
             const formattedDate = date.toISOString().substring(0, 10);
             const taskHtml = createTaskHtml(task.name, task.description, task.assignedTo, formattedDate, task.dueDate);
             tasksHtmlList.push(taskHtml);
             tasksHtml += (taskHtml + '\n');
-         });
-   }
+        });
+
+        let taskList = document.querySelector('#task-list')
+        if(taskList) {
+            taskList.innerHTML = tasksHtml;
+        }
+        //  console.log(tasksHtml)
+    }
 }
 
 // #endregion
@@ -144,13 +152,12 @@ taskList.addTask(task1);
 taskList.addTask(task2);
 taskList.addTask(task3);
 taskList.addTask(task4);
-// console.log(taskList.tasks);
 
 /******************** CRUD -> Read ********************/
 
-// taskList.getAllTasks();
+taskList.getAllTasks();
 
-// taskList.getAllTasksWithStatus('To Do');
+taskList.getAllTasksWithStatus('To Do');
 // console.log(taskList.getAllTasksWithStatus('To Do'));
 
 /******************** CRUD -> Delete ********************/
@@ -171,9 +178,9 @@ updatedTask.status = 'To Do';
 taskList.updateTask('todo3', updatedTask);
 // taskList.assignTask('todo1', 'Edison')
 
-//console.log(taskList.getAllTasks());
+// console.log(taskList.getAllTasks());
 
-taskList.render();
+ taskList.render();
 
 // #endregion
 

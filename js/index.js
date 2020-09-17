@@ -1,32 +1,3 @@
-//Create navbar for every pages
-let navbar = document.querySelector('nav');
-if(navbar) {
-    navbar.innerHTML = 
-    '<a href="#" class="navbar-brand d-none d-md-block">snl-project</a>' +
-    '<button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">' +
-        '<span class="navbar-toggler-icon"></span>' +
-    '</button>' +
-    '<div class="collapse navbar-collapse" id="navbarCollapse">' +
-        '<ul class="navbar-nav mr-auto">' +
-            '<li class="navbar-item">' +
-                '<a href="./index.html" class="nav-link">Home</a>' +
-            '</li>' +
-            '<li class="navbar-item">' +
-                '<a href="./create-task.html" class="nav-link">Create Tasks</a>' +
-            '</li>' +
-            '<li class="navbar-item">' +
-                '<a href="./contact-us.html" class="nav-link">Contact Us</a>' +
-            '</li>' +
-        '</ul>' +
-    '</div>' +
-    '<form class="form-inline d-md-block d-none my-2 my-lg-0">' +
-        '<input class="form-control mr-sm-2 py-0" type="search" placeholder="Search" aria-label="Search">' +
-        '<button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Search</button>' +
-    '</form>' +
-    '<button class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>';
-    navbar.classList.add('navbar', 'navbar-dark', 'bg-dark', 'navbar-expand-lg', 'fixed-top', 'py-0', 'mb-auto');
-}
-
 /************************************ Task 4 ************************************/
 /******************************* Input Validation *******************************/
 // #region
@@ -65,29 +36,22 @@ if(document.querySelector('#due-date')) {
 }
 
 // validate user input on create task form
-const validateTaskForm = () => {
-    const name = document.querySelector('#name');
+const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
     const isNameValid = name.value.length !== 0 && name.value.length <= 8;
     toggleValid(isNameValid, name);
 
-    const description = document.querySelector('#description');
     const isDescriptionValid = description.value.length !== 0 && description.value.length <= 15;
     toggleValid(isDescriptionValid, description);
 
-    const assignedTo = document.querySelector('#assigned-to');
     const isAssignedToValid = assignedTo.selectedIndex > 0 && assignedTo.options[assignedTo.selectedIndex].value.length <= 8;
     toggleValid(isAssignedToValid, assignedTo);
 
-    const dueDate = document.querySelector('#due-date');
     const today = new Date().toISOString().substring(0, 10);
     const isDueDateValid = dueDate.value > today;
     toggleValid(isDueDateValid, dueDate);
 
-    const status = document.querySelector('#status');
-
     if(isNameValid && isDescriptionValid && isAssignedToValid && isDueDateValid) {
-        const newTask = createTask (name.value, description.value, assignedTo.options[assignedTo.selectedIndex].value, dueDate.value, status.options[status.selectedIndex].value);
-        
+        const newTask = new Task(name.value, description.value, assignedTo.options[assignedTo.selectedIndex].value, dueDate.value, status.options[status.selectedIndex].value);
         return newTask;
     }
     else
@@ -123,42 +87,75 @@ const loadUpdateTaskForm = task => {
 // console.log(taskHtml);
 
 /************************************ Event Listeners ************************************/
-if(document.querySelector('#add-button')) {
-    document.querySelector('#add-button').addEventListener('click', (event) => {
+if(document.forms['create-task-form']) { 
+    document.forms['create-task-form'].addEventListener('submit', (event) => {
         event.preventDefault();
-        window.location.href = 'create-task.html';
-    }, true);
+
+        const name = document.querySelector('#name');
+        const description = document.querySelector('#description');
+        const assignedTo = document.querySelector('#assigned-to');
+        const dueDate = document.querySelector('#due-date');
+        const status = document.querySelector('#status');
+
+        const newTask = validateTaskForm(name, description, assignedTo, dueDate, status);
+
+        // Add the task to the task manager
+        if(newTask) 
+            taskList.addTask(newTask);
+
+        console.log(taskList.getAllTasks());
+        taskList.render();
+        // Clear the form
+        name.value = '';
+        description.value = '';
+        assignedTo.value = '';
+        dueDate.value = '';
+        status.value = 'To Do';
+    });
 }
 
-if(document.querySelector('#create-task')) {
-    document.querySelector('#create-task').addEventListener('submit', (event) => {
-        event.preventDefault();
+// if(document.querySelector('#task')) {
+//     document.querySelector('#task').addEventListener('click', (event) => {
+//         console.log(event.target.classList);
+//     }, true);
+// }
+
+// if(document.querySelector('#add-button')) {
+//     document.querySelector('#add-button').addEventListener('click', (event) => {
+//         event.preventDefault();
+//         window.location.href = 'create-task.html';
+//     }, true);
+// }
+
+// if(document.querySelector('#create-task')) {
+//     document.querySelector('#create-task').addEventListener('submit', (event) => {
+//         event.preventDefault();
         
-        const isCreateFormValid = validateTaskForm();
-        if(isCreateFormValid) {
-            window.location.href = 'index.html';
-            TaskManager.addTask(isCreateFormValid);
-            console.log(tasks.length);
-        }
-    }, true);
-}
+//         const isCreateFormValid = validateTaskForm();
+//         if(isCreateFormValid) {
+//             window.location.href = 'index.html';
+//             TaskManager.addTask(isCreateFormValid);
+//             console.log(tasks.length);
+//         }
+//     }, true);
+// }
 
-if(document.querySelector('#homepage')) {
-    document.querySelector('#homepage').addEventListener('load', (event) => {
-        event.preventDefault();
-        taskList.getAllTasks();
+// if(document.querySelector('#homepage')) {
+//     document.querySelector('#homepage').addEventListener('load', (event) => {
+//         event.preventDefault();
+//         taskList.getAllTasks();
 
-    }, true);
-}
+//     }, true);
+// }
 
-if(document.querySelector("#todo-list a")) {
-    document.querySelector("#todo-list a").addEventListener('click', (event) => {
-        event.preventDefault();
-    });
-}
+// if(document.querySelector("#todo-list a")) {
+//     document.querySelector("#todo-list a").addEventListener('click', (event) => {
+//         event.preventDefault();
+//     });
+// }
 
-if(document.querySelector(".card-footer button")) {
-    document.querySelector(".card-footer button").addEventListener('click', (event) => {
-        event.preventDefault();
-    });
-}
+// if(document.querySelector(".card-footer button")) {
+//     document.querySelector(".card-footer button").addEventListener('click', (event) => {
+//         event.preventDefault();
+//     });
+// 
