@@ -65,6 +65,7 @@ const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
 // console.log(taskHtml);
 
 /************************************ Event Listeners ************************************/
+// #region 
 const addButton = document.querySelector('#add-button');
 if(addButton) {
     addButton.addEventListener('click', (event) => {
@@ -152,3 +153,5 @@ if(inputSelectStatus) {
 
     }, true);
 };
+
+// #endregion

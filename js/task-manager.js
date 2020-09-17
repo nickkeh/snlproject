@@ -20,6 +20,7 @@ const setTaskStatusColor = (dueDate, status) => {
 // #endregion
 
 
+
 /************************************ Task 7 ************************************/
 // #region
 
@@ -51,6 +52,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
 }
 
 // #endregion
+
 
 
 /************************************ Task 6 ************************************/
@@ -142,7 +144,6 @@ let TaskManager = class  {
 // #endregion
 
 
-
 /**************************** Create new task objects ****************************/
 // #region
 
@@ -164,7 +165,6 @@ const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done')
 const task5 = new Task('task 5', 'description 5', 'Group', '2020-09-12', 'To Do');
 
 //#endregion
-
 
 
 /****************************** Testing Data Manipulation *******************************/
