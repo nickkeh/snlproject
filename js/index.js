@@ -60,7 +60,6 @@ const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
 
 // validate user input on create task form
 const loadUpdateTaskForm = task => {
-
     let updateForm = document.forms['update-task'];
 
     const name = document.querySelector('#update-task div div #name');
@@ -90,6 +89,8 @@ const loadUpdateTaskForm = task => {
 if(document.forms['create-task-form']) { 
     document.forms['create-task-form'].addEventListener('submit', (event) => {
         event.preventDefault();
+        const checkClassList = event.target.classList;
+        console.log(checkClassList);
 
         const name = document.querySelector('#name');
         const description = document.querySelector('#description');
@@ -105,12 +106,17 @@ if(document.forms['create-task-form']) {
 
         console.log(taskList.getAllTasks());
         taskList.render();
-        // Clear the form
+
+        name.classList.remove('is-valid');
+        description.classList.remove('is-valid')
+        assignedTo.classList.remove('is-valid');
+        dueDate.classList.remove('is-valid')
+
         name.value = '';
         description.value = '';
         assignedTo.value = '';
         dueDate.value = '';
-        status.value = 'To Do';
+        status.selectedIndex = 0;
     });
 }
 
