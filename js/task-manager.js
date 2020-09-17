@@ -1,32 +1,56 @@
+/************************************ Task 8 ************************************/
+// #region
+
+const setTaskStatusColor = (dueDate, status) => {
+    let itemColor = ''; 
+    if(dueDate >= new Date().toISOString().substring(0, 10))
+        itemColor = 'danger';
+    else if(status.replace(/\s/g, '') === 'ToDo')
+        itemColor = 'info';
+    else if(status.replace(/\s/g, '') === 'InProgress')
+        itemColor = 'primary';
+    else if(status.replace(/\s/g, '') === 'Review')
+        itemColor = 'warning';
+    else if(status.replace(/\s/g, '') === 'Done')
+        itemColor = 'success';
+
+    return itemColor
+}
+
+// #endregion
+
+
 /************************************ Task 7 ************************************/
 // #region
 
 // create the html element of a task based on information of the task parameters
-const createTaskHtml = (name, description, assignedTo, dueDate, status) => {
+const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
+    const itemColor = setTaskStatusColor(dueDate, status);
     const taskItemHtml = 
-    `<a href="#/update-task" class="list-group-item list-group-item-action">
-        <div class="card text-danger border-danger mb-2 shadow">
-            <div class="card-header bg-transparent d-flex justify-content-between">
+    `<li id="${id}" class="card border-${itemColor} mb-2 shadow">
+        <a href="#/update-task" class="list-group-item list-group-item-action text-${itemColor}">
+            <div class="card-header bg-transparent">
+                <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
-                <button class='done-button'>Mark as Done</button>
+                <button class='btn btn-outline-${itemColor} text-${itemColor} done-button'>Mark as Done</button>
+                </div>
+                <p>Due Date: <date>${dueDate}</date></p>
             </div>
             <div class="card-body">
-                <p>Due Date: <date>${dueDate}</date></p>
                 <h5 class="card-title">${name}</h5>
                 <p class="card-text">${description}</p>
             </div>
             <div class="card-footer bg-transparent d-flex justify-content-between">
                 <h6>${assignedTo}</h6>
-                <button>Delete</button>
+                <button class='btn btn-outline-${itemColor} text-${itemColor} delete-button'>Delete</button>
             </div>  
-        </div>
-    </a>`;
+        </a>
+    </li>`;
 
     return taskItemHtml;
 }
 
 // #endregion
-
 
 
 /************************************ Task 6 ************************************/
@@ -59,14 +83,16 @@ let TaskManager = class  {
 
     // function that retrieves only tasks with status that matches the selected status. 
     getAllTasksWithStatus = status => this.tasks.filter(item => { 
-        if(item.status === status) return item; });
+        if(item.status === status) 
+            return item; 
+    });
 
     // function that find and delete a selected task.  
-    deleteTask = task => {
-        const selectedIndex = this.tasks.findIndex(item => item.id === task.id);
-        this.tasks.splice(selectedIndex, selectedIndex >= 0 ? 1 : 0);
-        
-        return task;
+    deleteTask = id => {
+        const selectedIndex = this.tasks.findIndex(item => item.id === id);
+        const deletedTask = this.tasks.splice(selectedIndex, selectedIndex >= 0 ? 1 : 0);
+
+        return deletedTask;
     };
 
     // function that find and update the status of a selected task.  
@@ -98,10 +124,10 @@ let TaskManager = class  {
         let tasksHtmlList = [];
         let tasksHtml = ''; 
 
+        // console.log(this.tasks);
+
         this.tasks.map(task => {
-            const date = new Date(task.dueDate);
-            const formattedDate = date.toISOString().substring(0, 10);
-            const taskHtml = createTaskHtml(task.name, task.description, task.assignedTo, formattedDate, task.dueDate);
+            const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
             tasksHtmlList.push(taskHtml);
             tasksHtml += (taskHtml + '\n');
         });
@@ -110,7 +136,6 @@ let TaskManager = class  {
         if(taskList) {
             taskList.innerHTML = tasksHtml;
         }
-        //  console.log(tasksHtml)
     }
 }
 
@@ -136,6 +161,7 @@ const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To D
 const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-15', 'In Progress');
 const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-18', 'Review');
 const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done');
+const task5 = new Task('task 5', 'description 5', 'Group', '2020-09-12', 'To Do');
 
 //#endregion
 
@@ -152,6 +178,7 @@ taskList.addTask(task1);
 taskList.addTask(task2);
 taskList.addTask(task3);
 taskList.addTask(task4);
+taskList.addTask(task5);
 
 /******************** CRUD -> Read ********************/
 
@@ -162,7 +189,7 @@ taskList.getAllTasksWithStatus('To Do');
 
 /******************** CRUD -> Delete ********************/
 const deleteThisTask = taskList.tasks.find(item => item.id === 'todo2')
-// taskList.deleteTask(deleteThisTask);
+// taskList.deleteTask('todo2');
 // console.log(taskList.deleteTask(deleteThisTask));
 
 /******************** CRUD -> Update ********************/
@@ -175,7 +202,7 @@ updatedTask.description = 'Replace todo3';
 updatedTask.dueDate = '2020-09-30';
 updatedTask.assignedTo = 'Susanti';
 updatedTask.status = 'To Do';
-taskList.updateTask('todo3', updatedTask);
+// taskList.updateTask('todo3', updatedTask);
 // taskList.assignTask('todo1', 'Edison')
 
 // console.log(taskList.getAllTasks());

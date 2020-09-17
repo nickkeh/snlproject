@@ -58,27 +58,6 @@ const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
         return false;
 };
 
-// validate user input on create task form
-const loadUpdateTaskForm = task => {
-    let updateForm = document.forms['update-task'];
-
-    const name = document.querySelector('#update-task div div #name');
-    if(name) name.value = task.name;
-    console.log('this is my updateForm ' + updateForm);
-
-    const description = document.querySelector('#description');
-    if(description) document.querySelector('#description').value = task.description;
-
-    const assignedTo = document.querySelector('#assigned-to');
-    if(assignedTo) assignedTo.options[assignedTo.selectedIndex].value = task.assignedTo;
-
-    const dueDate = document.querySelector('#due-date');
-    if(dueDate) document.querySelector('#due-date').value = task.dueDate;
-
-    const status = document.querySelector('#status');
-    if(status) status.options[status.selectedIndex].value = task.status;
-};
-
 // #endregion
 
 
@@ -86,12 +65,25 @@ const loadUpdateTaskForm = task => {
 // console.log(taskHtml);
 
 /************************************ Event Listeners ************************************/
-if(document.forms['create-task-form']) { 
-    document.forms['create-task-form'].addEventListener('submit', (event) => {
+const addButton = document.querySelector('#add-button');
+if(addButton) {
+    addButton.addEventListener('click', (event) => {
         event.preventDefault();
-        const checkClassList = event.target.classList;
-        console.log(checkClassList);
+        const name = document.querySelector('#name');
+        const description = document.querySelector('#description');
+        const assignedTo = document.querySelector('#assigned-to');
+        const dueDate = document.querySelector('#due-date');
+        const status = document.querySelector('#status');
 
+        clearTaskForm(name, description, assignedTo, dueDate, status);
+    }, true);
+};
+
+const createTaskForm = document.forms['create-task-form'];
+if(createTaskForm) { 
+    createTaskForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+ 
         const name = document.querySelector('#name');
         const description = document.querySelector('#description');
         const assignedTo = document.querySelector('#assigned-to');
@@ -100,68 +92,63 @@ if(document.forms['create-task-form']) {
 
         const newTask = validateTaskForm(name, description, assignedTo, dueDate, status);
 
-        // Add the task to the task manager
         if(newTask) 
             taskList.addTask(newTask);
 
-        console.log(taskList.getAllTasks());
         taskList.render();
-
-        name.classList.remove('is-valid');
-        description.classList.remove('is-valid')
-        assignedTo.classList.remove('is-valid');
-        dueDate.classList.remove('is-valid')
+       
+        const formInputs = createTaskForm.querySelectorAll('.form-control');
+        formInputs.forEach(element => {
+            if(element.classList.contains('is-valid'))
+                element.classList.remove('is-valid');
+        });
 
         name.value = '';
         description.value = '';
         assignedTo.value = '';
-        dueDate.value = '';
+        const today = new Date().toISOString().substring(0, 10);
+        dueDate.value = today;
         status.selectedIndex = 0;
+    
     });
-}
+};
 
-// if(document.querySelector('#task')) {
-//     document.querySelector('#task').addEventListener('click', (event) => {
-//         console.log(event.target.classList);
-//     }, true);
-// }
 
-// if(document.querySelector('#add-button')) {
-//     document.querySelector('#add-button').addEventListener('click', (event) => {
-//         event.preventDefault();
-//         window.location.href = 'create-task.html';
-//     }, true);
-// }
+const taskListGroup = document.querySelector('#task-list');
+if(taskListGroup) {
+    taskListGroup.addEventListener('click', (event) => {
+        const taskItem = event.target;
+        if(taskItem.classList.contains('done-button')) {
+            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
+ 
+            taskList.updateTaskStatus(taskId, 'Done');
+            taskList.render();
+        }
+        else if(taskItem.classList.contains('delete-button')) {
+            const taskId = taskItem.parentElement.parentElement.parentElement.id;
+            taskList.deleteTask(taskId);
+            taskList.render();
+        }
 
-// if(document.querySelector('#create-task')) {
-//     document.querySelector('#create-task').addEventListener('submit', (event) => {
-//         event.preventDefault();
+    }, true);
+};
+
+let inputSelectStatus = document.querySelector('#select-status');
+if(inputSelectStatus) {
+    inputSelectStatus.addEventListener('change', (event) => {
+        event.preventDefault();
         
-//         const isCreateFormValid = validateTaskForm();
-//         if(isCreateFormValid) {
-//             window.location.href = 'index.html';
-//             TaskManager.addTask(isCreateFormValid);
-//             console.log(tasks.length);
-//         }
-//     }, true);
-// }
+        let selectedStatus = event.target.value;
+        if(selectedStatus === 'Select...') {
+            taskList.getAllTasks();
+            taskList.render();
+        }
+        else {
+            taskList.getAllTasksWithStatus(selectedStatus);
+            taskList.render();
+        }
 
-// if(document.querySelector('#homepage')) {
-//     document.querySelector('#homepage').addEventListener('load', (event) => {
-//         event.preventDefault();
-//         taskList.getAllTasks();
+        console.log(taskList.getAllTasksWithStatus(selectedStatus));
 
-//     }, true);
-// }
-
-// if(document.querySelector("#todo-list a")) {
-//     document.querySelector("#todo-list a").addEventListener('click', (event) => {
-//         event.preventDefault();
-//     });
-// }
-
-// if(document.querySelector(".card-footer button")) {
-//     document.querySelector(".card-footer button").addEventListener('click', (event) => {
-//         event.preventDefault();
-//     });
-// 
+    }, true);
+};
