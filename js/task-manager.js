@@ -3,15 +3,18 @@
 
 const setTaskStatusColor = (dueDate, status) => {
     let itemColor = ''; 
-    if(dueDate >= new Date().toISOString().substring(0, 10) && status.replace(/\s/g, '') !== 'ToDo')
+    if(dueDate <= new Date().toISOString().substring(0, 10) && status.replace(/\s/g, '') !== 'Done')
         itemColor = 'danger';
-    else if(status.replace(/\s/g, '') === 'ToDo')
-        itemColor = 'info';
-    else if(status.replace(/\s/g, '') === 'InProgress')
-        itemColor = 'primary';
-    else if(status.replace(/\s/g, '') === 'Review')
-        itemColor = 'warning';
-    else if(status.replace(/\s/g, '') === 'Done')
+   else if(dueDate > new Date().toISOString().substring(0, 10)) {
+        if(status.replace(/\s/g, '') === 'ToDo')
+            itemColor = 'info';
+        else if(status.replace(/\s/g, '') === 'InProgress')
+            itemColor = 'primary';
+        else if(status.replace(/\s/g, '') === 'Review')
+            itemColor = 'warning';
+    }
+    
+    if(status.replace(/\s/g, '') === 'Done')
         itemColor = 'success';
 
     return itemColor
@@ -27,13 +30,15 @@ const setTaskStatusColor = (dueDate, status) => {
 // create the html element of a task based on information of the task parameters
 const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
     const itemColor = setTaskStatusColor(dueDate, status);
+    const doneButtonVisibility = status.replace(/\s/g, '') === 'Done' ? 'invisible' : 'visible'; 
+    
     const taskItemHtml = 
-    `<li id="${id}" class="card border-${itemColor} mb-2 shadow">
-        <a href="#/update-task" class="list-group-item list-group-item-action text-${itemColor}">
+    `<li id="${id}" class="list-group-item list-group-item-action  mb-2">
+        <div href="#/update-task" class="card border-${itemColor} shadow text-${itemColor}">
             <div class="card-header bg-transparent">
                 <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
-                <button class='btn btn-outline-${itemColor} text-${itemColor} done-button'>Mark as Done</button>
+                <button class='btn btn-outline-${itemColor} text-${itemColor} ${doneButtonVisibility} done-button'>Mark as Done</button>
                 </div>
                 <p>Due Date: <date>${dueDate}</date></p>
             </div>
@@ -45,7 +50,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
                 <h6>${assignedTo}</h6>
                 <button class='btn btn-outline-${itemColor} text-${itemColor} delete-button'>Delete</button>
             </div>  
-        </a>
+        </div>
     </li>`;
 
     return taskItemHtml;
@@ -85,12 +90,12 @@ let TaskManager = class  {
     };
 
     // function that retrieves all tasks in the Tasks array.
-    getAllTasks = () => this.tasks.map(item => item)
-        .sort((a, b) => { 
-            const dateA = new Date(a.dueDate); 
-            const dateB = new Date(b.dueDate);
-            dateA < dateB ? 1 : -1;        
-        });
+    getAllTasks = () => this.tasks.map(item => item);
+        // .sort((a, b) => { 
+        //     const dateA = new Date(a.dueDate); 
+        //     const dateB = new Date(b.dueDate);
+        //     dateA < dateB ? 1 : -1;        
+        // });
 
     // function that retrieves only tasks with status that matches the selected status. 
     getAllTasksWithStatus = status => this.tasks.filter(item => { 
@@ -143,10 +148,11 @@ let TaskManager = class  {
             tasksHtml += (taskHtml + '\n');
         });
 
-        let taskList = document.querySelector('#task-list')
-        if(taskList) {
-            taskList.innerHTML = tasksHtml;
+        let taskListNode = document.querySelector('#task-list')
+        if(taskListNode) {
+            taskListNode.innerHTML = tasksHtml;
         }
+        // console.log(taskListNode);
     }
 }
 

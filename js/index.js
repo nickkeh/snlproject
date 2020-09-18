@@ -90,37 +90,46 @@ const displayCreateTask = () => {
     document.querySelector('#create-task').classList.remove('d-none');
 };
 
-const addButton = document.querySelector('#add-button');
-if(addButton) {
-    addButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        const name = document.querySelector('#name');
-        const description = document.querySelector('#description');
-        const assignedTo = document.querySelector('#assigned-to');
-        const dueDate = document.querySelector('#due-date');
-        const status = document.querySelector('#status');
-
-        clearTaskForm(name, description, assignedTo, dueDate, status);
-
-        displayCreateTask();
-    }, true);
-};
-
-const cancelNewTask = () => {
+const getTaskElement = () => {
     const name = document.querySelector('#name');
     const description = document.querySelector('#description');
     const assignedTo = document.querySelector('#assigned-to');
     const dueDate = document.querySelector('#due-date');
     const status = document.querySelector('#status');
 
-    clearTaskForm(name, description, assignedTo, dueDate, status);
+    return {name, description, assignedTo, dueDate, status}
+}
+const addButton = document.querySelector('#add-button');
+if(addButton) {
+    addButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const taskElement = getTaskElement();
+        clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+        displayCreateTask();
+    }, true);
+};
+
+const plusButton = document.querySelector('#plus-button');
+if(plusButton) {
+    plusButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const taskElement = getTaskElement();
+        clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+        displayCreateTask();
+    }, true);
+};
+
+const cancelNewTask = () => {
+    const taskElement = getTaskElement();
+    clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+
     const formInputs = createTaskForm.querySelectorAll('.form-control');
     formInputs.forEach(element => {
         if(element.classList.contains('is-valid'))
             element.classList.remove('is-valid');
         if(element.classList.contains('is-invalid'))
             element.classList.remove('is-invalid');
-   });
+    });
 
     displayTaskList();
 };
@@ -129,14 +138,9 @@ const createTaskForm = document.forms['create-task-form'];
 if(createTaskForm) { 
     createTaskForm.addEventListener('submit', (event) => {
         event.preventDefault();
- 
-        const name = document.querySelector('#name');
-        const description = document.querySelector('#description');
-        const assignedTo = document.querySelector('#assigned-to');
-        const dueDate = document.querySelector('#due-date');
-        const status = document.querySelector('#status');
 
-        const newTask = validateTaskForm(name, description, assignedTo, dueDate, status);
+        const taskElement = getTaskElement();    
+        const newTask = validateTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
 
         if(newTask){
             taskList.addTask(newTask);
@@ -149,14 +153,13 @@ if(createTaskForm) {
                     element.classList.remove('is-valid');
                 if(element.classList.contains('is-invalid'))
                     element.classList.remove('is-invalid');
-                   });
+            });
 
-            clearTaskForm(name, description, assignedTo, dueDate, status);
+            clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
         }
         else return false;
         
         taskList.render();
-
     });
 };
 
@@ -166,7 +169,8 @@ if(taskListGroup) {
         const taskItem = event.target;
         if(taskItem.classList.contains('done-button')) {
             const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
- 
+            console.log(taskItem)
+            taskItem.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
         }
@@ -175,7 +179,6 @@ if(taskListGroup) {
             taskList.deleteTask(taskId);
             taskList.render();
         }
-
     }, true);
 };
 
@@ -183,14 +186,18 @@ let inputSelectStatus = document.querySelector('#select-status');
 if(inputSelectStatus) {
     inputSelectStatus.addEventListener('change', (event) => {
         let selectedStatus = event.target.value;
-        if(selectedStatus === 'Select...') {
-            taskList.getAllTasks();
-            taskList.render();
-        }
+        if(selectedStatus.replace(/\s/g, '') === 'Select...') {
+            const allItems = taskList.getAllTasks();
+            console.log(allItems);
+         }
         else {
-            taskList.getAllTasksWithStatus(selectedStatus);
-            taskList.render();
+            const allItems = taskList.getAllTasksWithStatus(selectedStatus);
+            console.log(allItems);
         }
+
+        taskList.render();
+
+        // console.log(selectedStatus.replace(/\s/g, '') === 'ToDo');
     }, true);
 };
 
