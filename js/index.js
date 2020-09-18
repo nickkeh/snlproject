@@ -210,7 +210,6 @@ if(inputSelectStatus) {
     inputSelectStatus.addEventListener('change', (event) => {
         let selectedStatus = event.target.value;
         const selectedTasks = taskList.getAllTasksWithStatus(selectedStatus);
-        console.log(selectedTasks);
         taskList.renderSelectedTask(selectedTasks);  
     }, true);
 };
@@ -221,9 +220,10 @@ if(searchForm) {
         event.preventDefault();
 
         const searchInput = searchForm.querySelector('input').value;
-        taskList.searchTask(searchInput);
-        // console.log(taskList.searchTask(searchInput));
-        taskList.render();
+        console.log(taskList.searchTask(searchInput));
+
+        const selectedTasks = taskList.searchTask(searchInput);
+        taskList.renderSelectedTask(selectedTasks);
     });
 };
 
@@ -238,5 +238,6 @@ if(inputOnEnter) {
             taskList.render();
         }
     });
-}
+};
+
 // #endregion

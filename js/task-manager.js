@@ -38,7 +38,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
             <div class="card-header bg-transparent">
                 <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
-                <button class='btn btn-${itemColor} text-${itemColor} ${doneButtonVisibility} done-button'><i class="fa fa-check text-white done-icon"></i></button>
+                <button class='btn btn-${itemColor} text-${itemColor} rounded-circle ${doneButtonVisibility} done-button'><i class="fa fa-check text-white done-icon"></i></button>
                 </div>
                 <p>Due Date: <date>${dueDate}</date></p>
             </div>
@@ -48,7 +48,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
             </div>
             <div class="card-footer bg-transparent d-flex justify-content-between">
                 <h6>${assignedTo}</h6>
-                <button class='btn btn-danger text-white delete-button'><i class="fa fa-trash-o text-white delete-icon"></i></button>
+                <button class='btn btn-danger rounded-circle text-white delete-button'><i class="fa fa-trash-o text-white delete-icon"></i></button>
             </div>  
         </div>
     </li>`;
@@ -70,18 +70,19 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
 let TaskManager = class  {
     constructor() {
         this.tasks = [];
-        this.isSelectByStstatus = false;
         this.currentId = this.tasks.length + 1;
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
-    searchTask = keyword => this.tasks.filter(task =>
-        task.name ===  keyword ||
-        task.description ===  keyword || 
-        task.dueDate ===  keyword || 
-        task.assignedTo ===  keyword || 
-        task.status ===  keyword
-    );
+    searchTask = keyword => this.tasks.filter(task => {
+        if(task.name.includes(keyword) ||
+            task.description.includes(keyword) || 
+            task.dueDate.includes(keyword) || 
+            task.assignedTo.includes(keyword) || 
+            task.status.includes(keyword)) {
+                return task;
+        }
+    });
 
     // functions that add a new task object into the tasks array.   
     addTask = task => {
@@ -91,7 +92,7 @@ let TaskManager = class  {
     };
 
     // function that retrieves all tasks in the Tasks array.
-    getAllTasks = () => this.tasks.map(item => item);
+    getAllTasks = () => this.tasks.map(task => task);
         // .sort((a, b) => { 
         //     const dateA = new Date(a.dueDate); 
         //     const dateB = new Date(b.dueDate);
@@ -99,42 +100,39 @@ let TaskManager = class  {
         // });
 
         // function that retrieves only tasks with status that matches the selected status. 
-    getAllTasksWithStatus = status => {
-        this.isSelectByStstatus = true;
-        return this.tasks.filter(item => item.status === status);
-    };
+    getAllTasksWithStatus = status => this.tasks.filter(task => task.status === status);
 
     // function that find and delete a selected task.  
     deleteTask = id => {
-        const selectedIndex = this.tasks.findIndex(item => item.id === id);
+        const selectedIndex = this.tasks.findIndex(task => task.id === id);
         const deletedTask = this.tasks.splice(selectedIndex, selectedIndex >= 0 ? 1 : 0);
 
         return deletedTask;
     };
 
     // function that find and update the status of a selected task.  
-    updateTaskStatus = (id, status) => this.tasks.map(item => {
-        if(item.id === id)
-            item.status = status;
+    updateTaskStatus = (id, status) => this.tasks.map(task => {
+        if(task.id === id)
+        task.status = status;
     });
 
     // function that find and update the asignee of the selected task.  
-    assignTask = (id, assignee) => this.tasks.map(item => {
-        if(item.id === id)
-            item.assignedTo = assignee;
+    assignTask = (id, assignee) => this.tasks.map(task => {
+        if(task.id === id)
+            task.assignedTo = assignee;
     });
 
     // function that find and update a selected task.  
-    updateTask = (id, task) => this.tasks.map(item => {
-        if(item.id === id) {
-            item.name = task.name;
-            item.description = task.description;
-            item.dueDate = task.dueDate;
-            item.assignedTo = task.assignedTo;
-            item.status = task.status;
+    updateTask = (id, task) => this.tasks.map(task => {
+        if(task.id === id) {
+            task.name = task.name;
+            task.description = task.description;
+            task.dueDate = task.dueDate;
+            task.assignedTo = task.assignedTo;
+            task.status = task.status;
         }
         else 
-            return item;
+            return task;
     });
 
     renderSelectedTask(tasks) {
