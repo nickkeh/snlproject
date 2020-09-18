@@ -37,10 +37,10 @@ if(document.querySelector('#due-date')) {
 
 // validate user input on create task form
 const validateTaskForm = (name, description, assignedTo, dueDate, status) => {
-    const isNameValid = name.value.length !== 0 && name.value.length <= 8;
+    const isNameValid = name.value.length !== 0 && name.value.length <= 64;
     toggleValid(isNameValid, name);
 
-    const isDescriptionValid = description.value.length !== 0 && description.value.length <= 15;
+    const isDescriptionValid = description.value.length !== 0 && description.value.length <= 128;
     toggleValid(isDescriptionValid, description);
 
     const isAssignedToValid = assignedTo.selectedIndex > 0 && assignedTo.options[assignedTo.selectedIndex].value.length <= 8;
@@ -98,7 +98,8 @@ const getTaskElement = () => {
     const status = document.querySelector('#status');
 
     return {name, description, assignedTo, dueDate, status}
-}
+};
+
 const addButton = document.querySelector('#add-button');
 if(addButton) {
     addButton.addEventListener('click', (event) => {
@@ -169,7 +170,12 @@ if(taskListGroup) {
         const taskItem = event.target;
         if(taskItem.classList.contains('done-button')) {
             const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
-            console.log(taskItem)
+            taskItem.classList.add('invisible');
+            taskList.updateTaskStatus(taskId, 'Done');
+            taskList.render();
+        }
+        else if(taskItem.classList.contains('done-icon')) {
+            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.parentElement.id;
             taskItem.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
@@ -179,25 +185,33 @@ if(taskListGroup) {
             taskList.deleteTask(taskId);
             taskList.render();
         }
+        else if(taskItem.classList.contains('delete-icon')) {
+            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
+            taskList.deleteTask(taskId);
+            taskList.render();
+        }
     }, true);
 };
 
+const taskListGroupHover = document.querySelector('#task-list');
+if(taskListGroupHover) {
+    taskListGroupHover.addEventListener('mouseover', (event) => {
+        const taskItem = event.target;
+        if(taskItem.classList.contains('done-button') || taskItem.classList.contains('done-icon')) {
+            taskItem.style.color = 'white';
+        }
+        else if(taskItem.classList.contains('delete-button') || taskItem.classList.contains('delete-icon')) {
+            taskItem.style.color = 'white';
+        }
+    }, true);
+};
 let inputSelectStatus = document.querySelector('#select-status');
 if(inputSelectStatus) {
     inputSelectStatus.addEventListener('change', (event) => {
         let selectedStatus = event.target.value;
-        if(selectedStatus.replace(/\s/g, '') === 'Select...') {
-            const allItems = taskList.getAllTasks();
-            console.log(allItems);
-         }
-        else {
-            const allItems = taskList.getAllTasksWithStatus(selectedStatus);
-            console.log(allItems);
-        }
-
-        taskList.render();
-
-        // console.log(selectedStatus.replace(/\s/g, '') === 'ToDo');
+        const selectedTasks = taskList.getAllTasksWithStatus(selectedStatus);
+        console.log(selectedTasks);
+        taskList.renderSelectedTask(selectedTasks);  
     }, true);
 };
 

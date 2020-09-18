@@ -31,14 +31,14 @@ const setTaskStatusColor = (dueDate, status) => {
 const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
     const itemColor = setTaskStatusColor(dueDate, status);
     const doneButtonVisibility = status.replace(/\s/g, '') === 'Done' ? 'invisible' : 'visible'; 
-    
+
     const taskItemHtml = 
     `<li id="${id}" class="list-group-item list-group-item-action  mb-2">
         <div href="#/update-task" class="card border-${itemColor} shadow text-${itemColor}">
             <div class="card-header bg-transparent">
                 <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
-                <button class='btn btn-outline-${itemColor} text-${itemColor} ${doneButtonVisibility} done-button'>Mark as Done</button>
+                <button class='btn btn-${itemColor} text-${itemColor} ${doneButtonVisibility} done-button'><i class="fa fa-check text-white done-icon"></i></button>
                 </div>
                 <p>Due Date: <date>${dueDate}</date></p>
             </div>
@@ -48,7 +48,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
             </div>
             <div class="card-footer bg-transparent d-flex justify-content-between">
                 <h6>${assignedTo}</h6>
-                <button class='btn btn-outline-${itemColor} text-${itemColor} delete-button'>Delete</button>
+                <button class='btn btn-danger text-white delete-button'><i class="fa fa-trash-o text-white delete-icon"></i></button>
             </div>  
         </div>
     </li>`;
@@ -70,6 +70,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
 let TaskManager = class  {
     constructor() {
         this.tasks = [];
+        this.isSelectByStstatus = false;
         this.currentId = this.tasks.length + 1;
     }
 
@@ -97,11 +98,11 @@ let TaskManager = class  {
         //     dateA < dateB ? 1 : -1;        
         // });
 
-    // function that retrieves only tasks with status that matches the selected status. 
-    getAllTasksWithStatus = status => this.tasks.filter(item => { 
-        if(item.status === status) 
-            return item; 
-    });
+        // function that retrieves only tasks with status that matches the selected status. 
+    getAllTasksWithStatus = status => {
+        this.isSelectByStstatus = true;
+        return this.tasks.filter(item => item.status === status);
+    };
 
     // function that find and delete a selected task.  
     deleteTask = id => {
@@ -136,12 +137,26 @@ let TaskManager = class  {
             return item;
     });
 
+    renderSelectedTask(tasks) {
+        let tasksHtml = ''; 
+                
+        if(tasks) {
+            tasks.map(task => {
+                const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
+                tasksHtml += (taskHtml + '\n');
+            });
+
+            let taskListNode = document.querySelector('#task-list')
+            if(taskListNode) {
+                taskListNode.innerHTML = tasksHtml;
+            }
+        }
+    }
+
     render() {
         let tasksHtmlList = [];
         let tasksHtml = ''; 
-
-        // console.log(this.tasks);
-
+        
         this.tasks.map(task => {
             const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
             tasksHtmlList.push(taskHtml);
@@ -152,7 +167,6 @@ let TaskManager = class  {
         if(taskListNode) {
             taskListNode.innerHTML = tasksHtml;
         }
-        // console.log(taskListNode);
     }
 }
 
@@ -161,6 +175,8 @@ let TaskManager = class  {
 
 /**************************** Create new task objects ****************************/
 // #region
+// Object Literal
+var objetcLiteral = {};
 
 // "Constructor Function" that creates new task object.
 function Task(name, description, assignedTo, dueDate, status) {
@@ -174,8 +190,8 @@ function Task(name, description, assignedTo, dueDate, status) {
 
 // creating task items.
 const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To Do');
-const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-15', 'In Progress');
-const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-18', 'Review');
+const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-30', 'In Progress');
+const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-27', 'Review');
 const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done');
 const task5 = new Task('task 5', 'z', 'Group', '2020-09-12', 'To Do');
 
@@ -197,9 +213,9 @@ taskList.addTask(task5);
 
 /******************** CRUD -> Read ********************/
 
-taskList.getAllTasks();
+// taskList.getAllTasks();
 
-taskList.getAllTasksWithStatus('To Do');
+// taskList.getAllTasksWithStatus('To Do');
 // console.log(taskList.getAllTasksWithStatus('To Do'));
 
 /******************** CRUD -> Delete ********************/
@@ -219,10 +235,9 @@ updatedTask.assignedTo = 'Susanti';
 updatedTask.status = 'To Do';
 // taskList.updateTask('todo3', updatedTask);
 // taskList.assignTask('todo1', 'Edison')
-
 // console.log(taskList.getAllTasks());
 
- taskList.render();
+taskList.render();
 
 // #endregion
 
