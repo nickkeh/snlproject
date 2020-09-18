@@ -81,6 +81,8 @@ const displayTaskList = () => {
     document.querySelector('#tasks').classList.remove('d-none');    
     document.querySelector('#create-task').classList.add('d-none');
     document.querySelector('#create-task').classList.remove('d-block');    
+    document.querySelector('#update-task').classList.add('d-none');
+    document.querySelector('#update-task').classList.remove('d-block');    
 };
 
 const displayCreateTask = () => {
@@ -88,6 +90,17 @@ const displayCreateTask = () => {
     document.querySelector('#tasks').classList.remove('d-block');
     document.querySelector('#create-task').classList.add('d-block');
     document.querySelector('#create-task').classList.remove('d-none');
+    document.querySelector('#update-task').classList.add('d-none');
+    document.querySelector('#update-task').classList.remove('d-block');    
+};
+
+const displayUpdateTask = () => {
+    document.querySelector('#tasks').classList.add('d-none');
+    document.querySelector('#tasks').classList.remove('d-block');
+    document.querySelector('#create-task').classList.add('d-none');
+    document.querySelector('#create-task').classList.remove('d-block');    
+    document.querySelector('#update-task').classList.add('d-block');
+    document.querySelector('#update-task').classList.remove('d-none');    
 };
 
 const getTaskElement = () => {
@@ -167,26 +180,30 @@ if(createTaskForm) {
 const taskListGroup = document.querySelector('#task-list');
 if(taskListGroup) {
     taskListGroup.addEventListener('click', (event) => {
-        const taskItem = event.target;
-        if(taskItem.classList.contains('done-button')) {
-            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
-            taskItem.classList.add('invisible');
+        const taskElement = event.target;
+        console.log(taskElement);
+        if(taskElement.classList.contains('card')) {
+            displayUpdateTask();
+        }
+        else if(taskElement.classList.contains('done-button')) {
+            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.id;
+            taskElement.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
         }
-        else if(taskItem.classList.contains('done-icon')) {
-            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.parentElement.id;
-            taskItem.classList.add('invisible');
+        else if(taskElement.classList.contains('done-icon')) {
+            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+            taskElement.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
         }
-        else if(taskItem.classList.contains('delete-button')) {
-            const taskId = taskItem.parentElement.parentElement.parentElement.id;
+        else if(taskElement.classList.contains('delete-button')) {
+            const taskId = taskElement.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
             taskList.render();
         }
-        else if(taskItem.classList.contains('delete-icon')) {
-            const taskId = taskItem.parentElement.parentElement.parentElement.parentElement.id;
+        else if(taskElement.classList.contains('delete-icon')) {
+            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
             taskList.render();
         }
@@ -196,20 +213,21 @@ if(taskListGroup) {
 const taskListGroupHover = document.querySelector('#task-list');
 if(taskListGroupHover) {
     taskListGroupHover.addEventListener('mouseover', (event) => {
-        const taskItem = event.target;
-        if(taskItem.classList.contains('done-button') || taskItem.classList.contains('done-icon')) {
-            taskItem.style.color = 'white';
+        const taskElement = event.target;
+        if(taskElement.classList.contains('done-button') || taskElement.classList.contains('done-icon')) {
+            taskElement.style.color = 'white';
         }
-        else if(taskItem.classList.contains('delete-button') || taskItem.classList.contains('delete-icon')) {
-            taskItem.style.color = 'white';
+        else if(taskElement.classList.contains('delete-button') || taskElement.classList.contains('delete-icon')) {
+            taskElement.style.color = 'white';
         }
     }, true);
 };
-let inputSelectStatus = document.querySelector('#select-status');
+
+const inputSelectStatus = document.querySelector('#select-status');
 if(inputSelectStatus) {
     inputSelectStatus.addEventListener('change', (event) => {
-        let selectedStatus = event.target.value;
-        const selectedTasks = taskList.getAllTasksWithStatus(selectedStatus);
+        const searchInput = event.target.value;
+        const selectedTasks = taskList.searchTask(searchInput);
         taskList.renderSelectedTask(selectedTasks);  
     }, true);
 };
@@ -220,24 +238,24 @@ if(searchForm) {
         event.preventDefault();
 
         const searchInput = searchForm.querySelector('input').value;
-        console.log(taskList.searchTask(searchInput));
-
         const selectedTasks = taskList.searchTask(searchInput);
         taskList.renderSelectedTask(selectedTasks);
-    });
+    }, true);
 };
 
-let inputOnEnter = document.forms['search-form'].querySelector('input');
-if(inputOnEnter) {
-    inputOnEnter.addEventListener('keyup', (event) => {
-        if(event.keyCode === 13 || event.key === "Enter") {
+const searchInput = document.querySelector('#search-input');
+if(searchInput) { 
+    searchInput.addEventListener('keyup', (event) => {
+        if(event.keyCode === 13 || event.key === "Enter")
+        {
             event.preventDefault();
-
             const searchInput = searchForm.querySelector('input').value;
-            taskList.searchTask(searchInput);
-            taskList.render();
+            const selectedTasks = taskList.searchTask(searchInput);
+            taskList.renderSelectedTask(selectedTasks);
         }
-    });
+    }, true);
 };
+
+document.querySelector('#task-list')
 
 // #endregion

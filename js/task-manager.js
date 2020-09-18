@@ -34,7 +34,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
 
     const taskItemHtml = 
     `<li id="${id}" class="list-group-item list-group-item-action  mb-2">
-        <div href="#/update-task" class="card border-${itemColor} shadow text-${itemColor}">
+        <a href="#" class="card border-${itemColor} shadow text-${itemColor}">
             <div class="card-header bg-transparent">
                 <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
@@ -50,7 +50,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
                 <h6>${assignedTo}</h6>
                 <button class='btn btn-danger rounded-circle text-white delete-button'><i class="fa fa-trash-o text-white delete-icon"></i></button>
             </div>  
-        </div>
+        </a>
     </li>`;
 
     return taskItemHtml;
@@ -75,11 +75,13 @@ let TaskManager = class  {
 
     // function that retrieves only tasks with status that matches the selected status. 
     searchTask = keyword => this.tasks.filter(task => {
-        if(task.name.includes(keyword) ||
-            task.description.includes(keyword) || 
-            task.dueDate.includes(keyword) || 
-            task.assignedTo.includes(keyword) || 
-            task.status.includes(keyword)) {
+        keyword = keyword.toLowerCase();
+
+        if(task.name.toLowerCase().includes(keyword) ||
+            task.description.toLowerCase().includes(keyword) || 
+            task.dueDate.toLowerCase().includes(keyword) || 
+            task.assignedTo.toLowerCase().includes(keyword) || 
+            task.status.toLowerCase().includes(keyword)) {
                 return task;
         }
     });
