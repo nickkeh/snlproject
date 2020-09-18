@@ -26,7 +26,7 @@ const toggleValid = (valid, element) => {
 
 // validate the duedate input when onchange   
 if(document.querySelector('#due-date')) {
-    document.querySelector('#due-date').addEventListener('change', (event) => {
+    document.querySelector('#due-date').addEventListener('change', event => {
         event.preventDefault();
         const dueDate = document.querySelector('#due-date');
         const today = new Date().toISOString().substring(0, 10);
@@ -82,7 +82,8 @@ const displayTaskList = () => {
     document.querySelector('#create-task').classList.add('d-none');
     document.querySelector('#create-task').classList.remove('d-block');    
     document.querySelector('#update-task').classList.add('d-none');
-    document.querySelector('#update-task').classList.remove('d-block');    
+    document.querySelector('#update-task').classList.remove('d-block');
+    taskList.render();
 };
 
 const displayCreateTask = () => {
@@ -115,27 +116,27 @@ const getTaskElement = () => {
 
 const addButton = document.querySelector('#add-button');
 if(addButton) {
-    addButton.addEventListener('click', (event) => {
+    addButton.addEventListener('click', event => {
         event.preventDefault();
-        const taskElement = getTaskElement();
-        clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+        const element = getTaskElement();
+        clearTaskForm(element.name, element.description, element.assignedTo, element.dueDate, element.status);
         displayCreateTask();
     }, true);
 };
 
 const plusButton = document.querySelector('#plus-button');
 if(plusButton) {
-    plusButton.addEventListener('click', (event) => {
+    plusButton.addEventListener('click', event => {
         event.preventDefault();
-        const taskElement = getTaskElement();
-        clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+        const element = getTaskElement();
+        clearTaskForm(element.name, element.description, element.assignedTo, element.dueDate, element.status);
         displayCreateTask();
     }, true);
 };
 
 const cancelNewTask = () => {
-    const taskElement = getTaskElement();
-    clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+    const element = getTaskElement();
+    clearTaskForm(element.name, element.description, element.assignedTo, element.dueDate, element.status);
 
     const formInputs = createTaskForm.querySelectorAll('.form-control');
     formInputs.forEach(element => {
@@ -150,11 +151,11 @@ const cancelNewTask = () => {
 
 const createTaskForm = document.forms['create-task-form'];
 if(createTaskForm) { 
-    createTaskForm.addEventListener('submit', (event) => {
+    createTaskForm.addEventListener('submit', event => {
         event.preventDefault();
 
-        const taskElement = getTaskElement();    
-        const newTask = validateTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+        const element = getTaskElement();    
+        const newTask = validateTaskForm(element.name, element.description, element.assignedTo, element.dueDate, element.status);
 
         if(newTask){
             taskList.addTask(newTask);
@@ -169,7 +170,7 @@ if(createTaskForm) {
                     element.classList.remove('is-invalid');
             });
 
-            clearTaskForm(taskElement.name, taskElement.description, taskElement.assignedTo, taskElement.dueDate, taskElement.status);
+            clearTaskForm(element.name, element.description, element.assignedTo, element.dueDate, element.status);
         }
         else return false;
         
@@ -179,31 +180,31 @@ if(createTaskForm) {
 
 const taskListGroup = document.querySelector('#task-list');
 if(taskListGroup) {
-    taskListGroup.addEventListener('click', (event) => {
-        const taskElement = event.target;
-        console.log(taskElement);
-        if(taskElement.classList.contains('card')) {
+    taskListGroup.addEventListener('click', event => {
+        const element = event.target;
+        console.log(element);
+        if(element.classList.contains('card')) {
             displayUpdateTask();
         }
-        else if(taskElement.classList.contains('done-button')) {
-            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.id;
-            taskElement.classList.add('invisible');
+        else if(element.classList.contains('done-button')) {
+            const taskId = element.parentElement.parentElement.parentElement.parentElement.id;
+            element.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
         }
-        else if(taskElement.classList.contains('done-icon')) {
-            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.parentElement.id;
-            taskElement.classList.add('invisible');
+        else if(element.classList.contains('done-icon')) {
+            const taskId = element.parentElement.parentElement.parentElement.parentElement.parentElement.id;
+            element.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
             taskList.render();
         }
-        else if(taskElement.classList.contains('delete-button')) {
-            const taskId = taskElement.parentElement.parentElement.parentElement.id;
+        else if(element.classList.contains('delete-button')) {
+            const taskId = element.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
             taskList.render();
         }
-        else if(taskElement.classList.contains('delete-icon')) {
-            const taskId = taskElement.parentElement.parentElement.parentElement.parentElement.id;
+        else if(element.classList.contains('delete-icon')) {
+            const taskId = element.parentElement.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
             taskList.render();
         }
@@ -212,50 +213,69 @@ if(taskListGroup) {
 
 const taskListGroupHover = document.querySelector('#task-list');
 if(taskListGroupHover) {
-    taskListGroupHover.addEventListener('mouseover', (event) => {
-        const taskElement = event.target;
-        if(taskElement.classList.contains('done-button') || taskElement.classList.contains('done-icon')) {
-            taskElement.style.color = 'white';
+    taskListGroupHover.addEventListener('mouseover', event => {
+        const element = event.target;
+        if(element.classList.contains('done-button') || element.classList.contains('done-icon')) {
+            element.style.color = 'white';
         }
-        else if(taskElement.classList.contains('delete-button') || taskElement.classList.contains('delete-icon')) {
-            taskElement.style.color = 'white';
+        else if(element.classList.contains('delete-button') || element.classList.contains('delete-icon')) {
+            element.style.color = 'white';
         }
     }, true);
 };
 
 const inputSelectStatus = document.querySelector('#select-status');
 if(inputSelectStatus) {
-    inputSelectStatus.addEventListener('change', (event) => {
+    inputSelectStatus.addEventListener('change', event => {
         const searchInput = event.target.value;
         const selectedTasks = taskList.searchTask(searchInput);
-        taskList.renderSelectedTask(selectedTasks);  
+        taskList.render(selectedTasks);  
     }, true);
 };
 
 const searchForm = document.forms['search-form'];
 if(searchForm) { 
-    searchForm.addEventListener('submit', (event) => {
+    searchForm.addEventListener('submit', event => {
         event.preventDefault();
 
         const searchInput = searchForm.querySelector('input').value;
         const selectedTasks = taskList.searchTask(searchInput);
-        taskList.renderSelectedTask(selectedTasks);
+        taskList.render(selectedTasks);
     }, true);
 };
 
 const searchInput = document.querySelector('#search-input');
 if(searchInput) { 
-    searchInput.addEventListener('keyup', (event) => {
+    searchInput.addEventListener('keyup', event => {
         if(event.keyCode === 13 || event.key === "Enter")
         {
             event.preventDefault();
             const searchInput = searchForm.querySelector('input').value;
             const selectedTasks = taskList.searchTask(searchInput);
-            taskList.renderSelectedTask(selectedTasks);
+            taskList.render(selectedTasks);
         }
     }, true);
 };
 
-document.querySelector('#task-list')
-
+function handleClick (event){
+    var element = event.target;
+    var parentElement = getParentByClass(element, 'item');
+    if (parentElement) {
+      console.log(parentElement.className);
+    } else {
+      console.log('no item parent')
+     }
+  }
+  
+  // Get self or first parent with particular class
+  // May be replaced by Element.closest in future
+  function getParentByClass(el, className) {
+    do {
+      if (el.classList.contains(className)) {
+        return el;
+      } else {
+        el = el.parentNode; S
+      }
+    } while (el && el.parentNode)
+  }
 // #endregion

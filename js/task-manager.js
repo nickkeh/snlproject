@@ -34,7 +34,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
 
     const taskItemHtml = 
     `<li id="${id}" class="list-group-item list-group-item-action  mb-2">
-        <a href="#" class="card border-${itemColor} shadow text-${itemColor}">
+        <div class="card border-${itemColor} shadow text-${itemColor}">
             <div class="card-header bg-transparent">
                 <div class=" d-flex justify-content-between">
                 <p>${status}</p>                
@@ -50,7 +50,7 @@ const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
                 <h6>${assignedTo}</h6>
                 <button class='btn btn-danger rounded-circle text-white delete-button'><i class="fa fa-trash-o text-white delete-icon"></i></button>
             </div>  
-        </a>
+        </div>
     </li>`;
 
     return taskItemHtml;
@@ -137,26 +137,17 @@ let TaskManager = class  {
             return task;
     });
 
-    renderSelectedTask(tasks) {
-        let tasksHtml = ''; 
-                
-        if(tasks) {
-            tasks.map(task => {
-                const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
-                tasksHtml += (taskHtml + '\n');
-            });
-
-            let taskListNode = document.querySelector('#task-list')
-            if(taskListNode) {
-                taskListNode.innerHTML = tasksHtml;
-            }
-        }
-    }
-
-    render() {
+    render(tasks) {
         let tasksHtmlList = [];
         let tasksHtml = ''; 
         
+        if(tasks) 
+        tasks.map(task => {
+            const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
+            tasksHtmlList.push(taskHtml);
+            tasksHtml += (taskHtml + '\n');
+        });
+        else
         this.tasks.map(task => {
             const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
             tasksHtmlList.push(taskHtml);
