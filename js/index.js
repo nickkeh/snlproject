@@ -162,7 +162,6 @@ if(taskForm) {
         event.preventDefault();
 
         const element = getTaskFormElement();    
-        console.log(element.submit.value)
         const newTask = validateTaskForm(element.id, element.name, element.description, element.assignedTo, element.dueDate, element.status);
         if(newTask) {
             if(element.submit.value === 'Save')
