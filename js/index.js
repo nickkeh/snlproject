@@ -135,16 +135,6 @@ const displayTaskForm = (action, task) => {
     document.querySelector('#create-task').classList.add('d-block');
     document.querySelector('#create-task').classList.remove('d-none');
 };
-       
-const getParentElement = (className) => { 
-    let currentElement = element; 
-    while (currentElement && currentElement.parentElement) {
-        if (currentElement.classList.contains(className))
-            return currentElement.id;
-        else
-            currentElement = currentElement.parentElement;
-    } 
-}
 
 const addButton = document.querySelector('#add-button');
 if(addButton) {
@@ -185,6 +175,15 @@ if(taskForm) {
     });
 };
 
+const getParentElement = (parentClass, currentElement) => { 
+    while (currentElement && currentElement.parentElement) {
+        if (currentElement.classList.contains(parentClass))
+            return currentElement.id;
+        else
+            currentElement = currentElement.parentElement;
+    } 
+}
+
 const taskListGroupClick = document.querySelector('#task-list');
 if(taskListGroupClick) {
     taskListGroupClick.addEventListener('click', event => {
@@ -222,7 +221,7 @@ if(taskListGroupClick) {
             element.classList.contains('card-footer') ||
             element.classList.contains('assigned-to')) {
 
-            let task = taskList.getTaskById(getParentElement('list-group-item'));
+            let task = taskList.getTaskById(getParentElement('list-group-item', element));
             displayTaskForm('update', task);
        }
     }, true);
