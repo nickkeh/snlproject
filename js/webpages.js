@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>snl project</title>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="style.css" type="text/css" />
-</head>
-
-<body>
-    <div id="root"></div>
-    <!-- <div class="container">
+let rootDiv = document.querySelector('#root');
+if(rootDiv) {
+    rootDiv.innerHTML =
+    `<div class="container">
         <nav class="navbar navbar-dark bg-dark navbar-expand-lg fixed-top py-0 mb-auto">
             <a href="#" class="navbar-brand d-none d-md-block">snl-project</a> 
             <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse"> 
@@ -35,17 +23,17 @@
             </div> 
             <button id="plus-button" class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>
         </nav>
-        <form id="search-form" class="row form-inline form-group-sm d-md-none d-block my-2 my-lg-0"> 
+        <!-- <form id="search-form" class="row form-inline form-group-sm d-md-none d-block my-2 my-lg-0"> 
             <input id="search-input" class="form-control mr-sm-2 py-0" type="search" placeholder="Search..." aria-label="Search"> 
             <button class="btn btn-sm btn-outline-dark my-2 my-sm-0" type="submit"><i class="fa fa-search"></button> 
-        </form>
+        </form>  -->
 
         <main class="row">
             <section id="tasks" class="col">
                 <div id="task-header">
                     <h4>Todays tasks:</h4>
                     <div class="row justify-content-between my-3">
-                        <form class="form-inline col-10">
+                        <form class="form-inline col-md-10">
                             <div class="form-group">
                                 <label for="status">Select by Status &nbsp;</label>
                                 <select id="select-status" class="form-control">Select by Status &nbsp;
@@ -57,6 +45,7 @@
                                     <option>Expired</option>
                                 </select>
                             </div>
+                            <button id="back-button" class="btn btn-sm btn-outline-dark font-weight-bold d-none ml-2">Back</button>
                         </form>
                         <button id="add-button" class="btn btn-outline-warning text-info font-weight-bold rounded-pill d-none d-md-block mr-3">New Task</button>
                     </div>
@@ -74,7 +63,7 @@
                         <label for="name" class="col-md-3 col-form-label">Name</label>
                         <div class="col-md-6">
                             <input id="name" class="form-control" type="text" />
-                        <div class="invalid-feedback">Name shouldnt be empty or more than 8 characters.</div>
+                        <div class="invalid-feedback">Name shouldnt be empty or more than 64 characters.</div>
                         </div>
                     </div>
 
@@ -82,7 +71,7 @@
                         <label for="description" class="col-md-3 col-form-label">Description</label>
                         <div class="col-md-6">
                             <textarea id="description" class="form-control"></textarea>
-                            <div class="invalid-feedback">Description shouldnt be empty or more than 15 characters.</div>
+                            <div class="invalid-feedback">Description shouldnt be empty or more than 128 characters.</div>
                         </div>
                     </div>
 
@@ -124,22 +113,12 @@
                         <div class="col offset-md-3 col-md-6 px-3 my-4 d-flex justify-content-between">
                             <input type="button" name="cancel" class="btn btn-outline-dark" value="cancel" onClick="cancelNewTask()" />         
                             <input type="submit" name="submit" class="btn btn-outline-dark" value="Save" />         
+                                <!-- <button type="cancel" class="btn btn-outline-dark">Cancel</button>
+                            <button type="submit" class="btn btn-outline-dark">Submit</button> -->
                         </div> 
                     </div>
                 </form>
             </section>
         </main>
-    </div> -->
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
-    </script>
-    <script src="./js/webpages.js"></script>  
-    <script src="./js/task-manager.js"></script>  
-    <script src="./js/index.js"></script>  
-</body>
-
-</html>
+    </div>`
+}
