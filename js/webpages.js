@@ -33,7 +33,7 @@ if(rootDiv) {
                 <div id="task-header">
                     <h4>Todays tasks:</h4>
                     <div class="row justify-content-between my-3">
-                        <form class="form-inline col-md-10">
+                        <form id="form-select-status" class="form-inline col-md-9">
                             <div class="form-group">
                                 <label for="status">Select by Status &nbsp;</label>
                                 <select id="select-status" class="form-control">Select by Status &nbsp;

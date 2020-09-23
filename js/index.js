@@ -92,18 +92,26 @@ const clearTaskForm = (form) => {
 
 // #endregion
 
-
-
 /************************************ Event Listeners ************************************/
 // #region 
 let currentStatus = '';
 
 const displayTaskList = () => {
-    document.querySelector('#tasks').classList.add('d-block');    
+    // document.querySelector('#tasks').classList.add('d-block');    
     document.querySelector('#tasks').classList.remove('d-none');    
     document.querySelector('#create-task').classList.add('d-none');
-    document.querySelector('#create-task').classList.remove('d-block');    
-    
+    // document.querySelector('#create-task').classList.remove('d-block');
+
+    const taskHeader = document.querySelector('#form-select-status');
+    if(taskList.tasks) {
+        if(taskList.tasks.length <= 0)
+            taskHeader.classList.add('d-none');
+        else
+            taskHeader.classList.remove('d-none'); 
+    }
+    else
+        taskHeader.classList.add('d-none');
+
     if(currentStatus === 'To Do' || currentStatus === 'In Progress' || 
         currentStatus === 'Review' || currentStatus === 'Done' ||
         currentStatus === 'Expired') {
@@ -114,6 +122,8 @@ const displayTaskList = () => {
         taskList.render();
     }
 };
+
+displayTaskList();
 
 const displayTaskForm = (action, task) => {
     const taskForm = document.forms['task-form']
@@ -139,8 +149,8 @@ const displayTaskForm = (action, task) => {
     }
 
     document.querySelector('#tasks').classList.add('d-none');
-    document.querySelector('#tasks').classList.remove('d-block');
-    document.querySelector('#create-task').classList.add('d-block');
+    // document.querySelector('#tasks').classList.remove('d-block');
+    // document.querySelector('#create-task').classList.add('d-block');
     document.querySelector('#create-task').classList.remove('d-none');
 };
 
@@ -252,7 +262,7 @@ const selectTasksByStatus = status => {
     let selectedTasks = {};
 
     const backToGetAllTask = document.querySelector('#back-button');
-    backToGetAllTask.classList.add('d-block');
+    // backToGetAllTask.classList.add('d-block');
     backToGetAllTask.classList.remove('d-none');
 
     if(status === 'To Do' || status === 'In Progress' || status === 'Review' || status === 'Done') 
@@ -282,10 +292,11 @@ const backToGetAllTask = document.querySelector('#back-button');
 if(backToGetAllTask) {
     backToGetAllTask.addEventListener('click', () => {
         backToGetAllTask.classList.add('d-none');
-        backToGetAllTask.classList.remove('d-block');
+        // backToGetAllTask.classList.remove('d-block');
         
         let selectDropdown = document.querySelector('#select-status');
         selectDropdown.selectedIndex = 'Select..';
+        
         currentStatus = '';
         selectTasksByStatus('Select..');
     });
