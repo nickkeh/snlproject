@@ -57,8 +57,8 @@
 
 let TaskManager = class  {
     constructor() {
-        this.tasks = this.getAllTasks();
-        this.currentId = this.tasks.length + 1;
+        this.tasks = [];
+        this.currentId = this.tasks ? this.tasks.length + 1 : 0;
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
@@ -78,9 +78,12 @@ let TaskManager = class  {
     addTask = task => {
         task.id = 'todo' + this.currentId;
         this.currentId++;
-        
+
+        if(!this.tasks)
+            this.tasks = [];
+
         this.tasks.push(task);
-        this.saveTask()
+        this.saveTask();
     }
 
     saveTask() {
@@ -161,14 +164,15 @@ let TaskManager = class  {
         
         if(tasks) 
             tasks.map(task => {
-                const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
+                const taskHtml = createTaskHtml(task);
                 tasksHtml += (taskHtml + '\n');
             });
         else
-            this.tasks.map(task => {
-                const taskHtml = createTaskHtml(task.id, task.name, task.description, task.assignedTo, task.dueDate, task.status);
-                tasksHtml += (taskHtml + '\n');
-            });
+            if(this.tasks)
+                this.tasks.map(task => {
+                    const taskHtml = createTaskHtml(task);
+                    tasksHtml += (taskHtml + '\n');
+                });
 
         let taskListNode = document.querySelector('#task-list')
         if(taskListNode) {
@@ -213,28 +217,28 @@ const setTaskStatusColor = (dueDate, status) => {
 // #region
 
 // create the html element of a task based on information of the task parameters
-const createTaskHtml = (id, name, description, assignedTo, dueDate, status) => {
-    const taskColor = setTaskStatusColor(dueDate, status);
-    const doneButtonVisibility = status.replace(/\s/g, '') === 'Done' ? 'invisible' : 'visible'; 
+const createTaskHtml = (task) => {
+    const taskColor = setTaskStatusColor(task.dueDate, task.status);
+    const doneButtonVisibility = task.status.replace(/\s/g, '') === 'Done' ? 'invisible' : 'visible'; 
 
     const taskItemHtml = 
-    `<li id="${id}" class="list-group-item list-group-item-action mb-2 mb-md-4">
+    `<li id="${task.id}" class="list-group-item list-group-item-action mb-2 mb-md-4">
         <div class="card border-${taskColor.color} shadow text-${taskColor.color}" style="background-color:${taskColor.rgbaColor}">
             <div class="card-header bg-transparent pt-1 pb-0 py-md-3">
                 <div class="status d-flex justify-content-between py-0">
-                    <p class="status">${status}</p>                
+                    <p class="status">${task.status}</p>                
                     <button class="btn btn-${taskColor.color} text-${taskColor.color} rounded-circle ${doneButtonVisibility} done-button">
                         <i class="fa fa-check text-white done-icon"></i>
                     </button>
                 </div>
-                <p class="duedate">Due Date: <date class="duedate">${dueDate}</date></p>
+                <p class="duedate">Due Date: <date class="duedate">${task.dueDate}</date></p>
             </div>
             <div class="card-body py-1 py-md-3">
-                <h6 class="card-title">${name}</h6>
-                <p class="card-text">${description}</p>
+                <h6 class="card-title">${task.name}</h6>
+                <p class="card-text">${task.description}</p>
             </div>
             <div class="card-footer py-1 py-md-3 bg-transparent d-flex justify-content-between">
-                <h5 class="assigned-to">${assignedTo}</h5>
+                <h5 class="assigned-to">${task.assignedTo}</h5>
                 <button class="btn btn-danger rounded-circle text-white delete-button"><i class="fa fa-trash-o text-white delete-icon"></i></button>
             </div>  
         </div>
@@ -267,15 +271,13 @@ function Task(name, description, assignedTo, dueDate, status) {
 }
 
 // creating task items.
-// const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To Do');
+const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To Do');
 // const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-30', 'In Progress');
 // const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-27', 'Review');
 // const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done');
 // const task5 = new Task('task 5', 'zzzzzz.... this is example of very long descriptions. and i repeat again this is example of very long descriptions.', 'Group', '2020-09-12', 'To Do');
 
 //#endregion
-
-
 
 /****************************** Testing Data Manipulation *******************************/
 // #region
