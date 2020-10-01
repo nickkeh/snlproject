@@ -94,8 +94,9 @@ if(rootDiv) {
                         <label for="due-date" class="col-md-3 col-form-label">Due Date:</label>
                         <div class="col-md-6">
                             <input id="due-date" class="form-control" type="date" />
-                            <div class="invalid-feedback">Please choose a date after today.</div></div>
+                            <div class="invalid-feedback">Please choose a date after today.</div>
                         </div>
+                    </div>
 
                     <div class="form-group row">
                         <label for="status" class="col-md-3 ol-form-label">Status</label>
@@ -107,7 +108,7 @@ if(rootDiv) {
                                 <option>Done</option>
                             </select>
                         </div>
-                </div>
+                    </div>
 
                     <div class="row">
                         <div class="col offset-md-3 col-md-6 px-3 my-4 d-flex justify-content-between">

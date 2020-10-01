@@ -58,7 +58,7 @@
 let TaskManager = class  {
     constructor() {
         this.tasks = [];
-        this.currentId = this.tasks ? this.tasks.length + 1 : 0;
+        this.currentId = this.tasks.length + 1;
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
@@ -76,8 +76,7 @@ let TaskManager = class  {
 
     // functions that add a new task object into the tasks array.   
     addTask = task => {
-        task.id = 'todo' + this.currentId;
-        this.currentId++;
+        task.id = 'todo' + ++this.currentId;
 
         if(!this.tasks)
             this.tasks = [];
@@ -87,7 +86,8 @@ let TaskManager = class  {
     }
 
     saveTask() {
-        localStorage.setItem('TaskList', JSON.stringify(this.tasks));
+        if(this.tasks)
+            localStorage.setItem('TaskList', JSON.stringify(this.tasks));
     }
 
     // function that retrieves all tasks in the Tasks array.
@@ -174,9 +174,9 @@ let TaskManager = class  {
                     tasksHtml += (taskHtml + '\n');
                 });
 
-        let taskListNode = document.querySelector('#task-list')
-        if(taskListNode) {
-            taskListNode.innerHTML = tasksHtml;
+        let ulTaskList = document.querySelector('#task-list')
+        if(ulTaskList) {
+            ulTaskList.innerHTML = tasksHtml;
         }
     }
 }

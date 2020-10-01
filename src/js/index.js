@@ -97,20 +97,24 @@ const clearTaskForm = (form) => {
 let currentStatus = '';
 
 const displayTaskList = () => {
-    // document.querySelector('#tasks').classList.add('d-block');    
-    document.querySelector('#tasks').classList.remove('d-none');    
-    document.querySelector('#create-task').classList.add('d-none');
+    // document.querySelector('#tasks').classList.add('d-block');
+    if(document.querySelector('#tasks'))
+        document.querySelector('#tasks').classList.remove('d-none');    
+    if(document.querySelector('#create-task'))
+        document.querySelector('#create-task').classList.add('d-none');
     // document.querySelector('#create-task').classList.remove('d-block');
 
     const taskHeader = document.querySelector('#form-select-status');
-    if(taskList.tasks) {
-        if(taskList.tasks.length <= 0)
-            taskHeader.classList.add('d-none');
+    if(taskHeader) {
+        if(taskList.tasks) {
+            if(taskList.tasks.length <= 0)
+                taskHeader.classList.add('d-none');
+            else
+                taskHeader.classList.remove('d-none'); 
+        }
         else
-            taskHeader.classList.remove('d-none'); 
+            taskHeader.classList.add('d-none');
     }
-    else
-        taskHeader.classList.add('d-none');
 
     if(currentStatus === 'To Do' || currentStatus === 'In Progress' || 
         currentStatus === 'Review' || currentStatus === 'Done' ||
@@ -323,6 +327,11 @@ if(searchInput) {
             const searchInput = searchForm.querySelector('input').value;
             const selectedTasks = taskList.searchTask(searchInput);
             taskList.render(selectedTasks);
+            searchInput.value = '';
+        }
+        else if(event.keyCode === 27 || event.key === "Esc") {
+            event.preventDefault();
+            taskList.render();
             searchInput.value = '';
         }
     }, true);
