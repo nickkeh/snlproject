@@ -58,7 +58,7 @@
 let TaskManager = class  {
     constructor() {
         this.tasks = [];
-        this.currentId = this.tasks.length + 1;
+        this.currentId = this.tasks ? this.tasks.length+1 : 1;
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
@@ -76,8 +76,9 @@ let TaskManager = class  {
 
     // functions that add a new task object into the tasks array.   
     addTask = task => {
-        task.id = 'todo' + ++this.currentId;
-
+        task.id = this.currentId;
+        this.currentId++;
+        
         if(!this.tasks)
             this.tasks = [];
 
@@ -86,12 +87,16 @@ let TaskManager = class  {
     }
 
     saveTask() {
-        if(this.tasks)
-            localStorage.setItem('TaskList', JSON.stringify(this.tasks));
+        if(this.tasks) localStorage.setItem('TaskList', JSON.stringify(this.tasks));
     }
 
     // function that retrieves all tasks in the Tasks array.
-    getAllTasks = () => this.tasks = JSON.parse(localStorage.getItem('TaskList'));
+    getAllTasks = () => {
+        this.tasks = JSON.parse(localStorage.getItem('TaskList'));
+        const lastItem = JSON.parse(localStorage.getItem('TaskList')).pop();
+        this.currentId = lastItem ? lastItem.id+1 : 1;
+        console.log(this.currentId)
+    }
 
     // function that retrieves only tasks with status that matches the selected status. 
     getTaskById = id => {
@@ -174,7 +179,7 @@ let TaskManager = class  {
                     tasksHtml += (taskHtml + '\n');
                 });
 
-        let ulTaskList = document.querySelector('#task-list')
+        const ulTaskList = document.querySelector('#task-list')
         if(ulTaskList) {
             ulTaskList.innerHTML = tasksHtml;
         }
@@ -193,18 +198,18 @@ let TaskManager = class  {
 const setTaskStatusColor = (dueDate, status) => {
     let taskColor = {}; 
     if(dueDate <= new Date().toISOString().substring(0, 10) && status.replace(/\s/g, '') !== 'Done')
-        taskColor = { color:'danger', rgbaColor:'rgba(217, 83, 79, 0.05)'};
+        taskColor = { color:'danger', rgbaColor:'rgba(217, 83, 79, 0.2)'};
     else if(dueDate > new Date().toISOString().substring(0, 10)) {
         if(status.replace(/\s/g, '') === 'ToDo')
-            taskColor = { color:'info', rgbaColor:'rgba(91, 192, 222, 0.05)'};
+            taskColor = { color:'info', rgbaColor:'rgba(91, 192, 222, 0.5)'};
         else if(status.replace(/\s/g, '') === 'InProgress')
-            taskColor = { color:'primary', rgbaColor:'rgba(2, 117, 216, 0.05)'};
+            taskColor = { color:'primary', rgbaColor:'rgba(2, 117, 216, 0.2)'};
         else if(status.replace(/\s/g, '') === 'Review')
-            taskColor = { color:'warning', rgbaColor:'rgba(240, 173, 78, 0.05)'};
+            taskColor = { color:'warning', rgbaColor:'rgba(240, 173, 78, 0.2)'};
     }
     
-    if(status.replace(/\s/g, '') === 'Done')
-        taskColor = { color:'success', rgbaColor:'rgba(92, 184, 92, 0.05)'};
+    if(status === 'Done')
+        taskColor = { color:'success', rgbaColor:'rgba(92, 184, 92, 0.2)'};
 
     return taskColor
 }
@@ -218,12 +223,16 @@ const setTaskStatusColor = (dueDate, status) => {
 
 // create the html element of a task based on information of the task parameters
 const createTaskHtml = (task) => {
-    const taskColor = setTaskStatusColor(task.dueDate, task.status);
-    const doneButtonVisibility = task.status.replace(/\s/g, '') === 'Done' ? 'invisible' : 'visible'; 
+    let taskColor = '';
+    let doneButtonVisibility = '';
 
+    if(task) {
+        taskColor = setTaskStatusColor(task.dueDate, task.status);
+        doneButtonVisibility = task.status === 'Done' ? 'invisible' : 'visible'; 
+    
     const taskItemHtml = 
-    `<li id="${task.id}" class="list-group-item list-group-item-action mb-2 mb-md-4">
-        <div class="card border-${taskColor.color} shadow text-${taskColor.color}" style="background-color:${taskColor.rgbaColor}">
+    `<li id="${task.id}" class="list-group-item list-group-item-action bg-transparent font-weight-bold mb-2 mb-md-4">
+        <div class="card border-${taskColor.color} text-${taskColor.color}" style="background-color:${taskColor.rgbaColor}">
             <div class="card-header bg-transparent pt-1 pb-0 py-md-3">
                 <div class="status d-flex justify-content-between py-0">
                     <p class="status">${task.status}</p>                
@@ -245,6 +254,7 @@ const createTaskHtml = (task) => {
     </li>`;
 
     return taskItemHtml;
+    }
 }
 
 // #endregion
@@ -271,10 +281,10 @@ function Task(name, description, assignedTo, dueDate, status) {
 }
 
 // creating task items.
-const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-09-20', 'To Do');
-// const task2 = new Task('task 2', 'description 2', 'Nick', '2020-09-30', 'In Progress');
-// const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-09-27', 'Review');
-// const task4 = new Task('task 4', 'description 4', 'Robin', '2020-09-12', 'Done');
+// const task1 = new Task('task 1', 'description 1', 'Susanti', '2020-11-20', 'To Do');
+// const task2 = new Task('task 2', 'description 2', 'Nick', '2020-12-30', 'In Progress');
+// const task3 = new Task('task 3', 'description 3', 'Lakshmi', '2020-10-27', 'Review');
+// const task4 = new Task('task 4', 'description 4', 'Robin', '2020-11-12', 'Done');
 // const task5 = new Task('task 5', 'zzzzzz.... this is example of very long descriptions. and i repeat again this is example of very long descriptions.', 'Group', '2020-09-12', 'To Do');
 
 //#endregion
@@ -293,8 +303,7 @@ let taskList = new TaskManager();
 // taskList.addTask(task5);
 
 /******************** CRUD -> Read ********************/
-
-taskList.getAllTasks();
+// taskList.getAllTasks();
 
 // taskList.getAllTasksWithStatus('To Do');
 // console.log(taskList.getAllTasksWithStatus('To Do'));
@@ -318,7 +327,7 @@ taskList.getAllTasks();
 // taskList.assignTask('todo1', 'Edison')
 // console.log(taskList.getAllTasks());
 
-taskList.render();
+// taskList.render();
 
 // #endregion
 

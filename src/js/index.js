@@ -1,3 +1,16 @@
+// let taskList = new TaskManager();
+taskList.getAllTasks();
+taskList.render();
+
+// "Constructor Function" that creates new task object.
+// function Task(name, description, assignedTo, dueDate, status) {
+//     this.id = '';
+//     this.name = name;
+//     this.description = description;
+//     this.assignedTo = assignedTo;
+//     this.dueDate = dueDate;
+//     this.status = status;
+// }
 /************************************ Task 4 ************************************/
 /******************************* Input Validation *******************************/
 // #region
@@ -183,7 +196,7 @@ if(taskForm) {
     taskForm.addEventListener('submit', event => {
         event.preventDefault();
 
-        const taskForm = getTaskFormElement();    
+        const taskForm = getTaskFormElement();
         const newTask = validateTaskForm(taskForm.id, taskForm.name, taskForm.description, taskForm.assignedTo, taskForm.dueDate, taskForm.status);
         if(newTask) {
             if(taskForm.submit.value === 'Save')

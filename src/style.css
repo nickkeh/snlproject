@@ -1,9 +1,8 @@
 body {
-    margin-top: 60px;
-    text-shadow: 1px 1px 1px lightgray;
-
-    /* background-color: #292b2c; 
-    color: whitesmoke;*/
+    text-shadow: 1px 1px 1px darkslategrey;
+    background-image: linear-gradient(160deg, rgb(241, 156, 187) 15%, rgb(135,206,235) 25%, rgb(255, 191, 0) 30%, rgb(80, 220, 100) 45%, rgb(216, 191, 216) 65%);
+    min-height: 100vw;
+    color: teal;
 }
 
 .list-group-item {
