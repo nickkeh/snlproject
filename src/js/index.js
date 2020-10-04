@@ -1,3 +1,16 @@
+// let taskList = new TaskManager();
+taskList.getAllTasks();
+taskList.render();
+
+// "Constructor Function" that creates new task object.
+// function Task(name, description, assignedTo, dueDate, status) {
+//     this.id = '';
+//     this.name = name;
+//     this.description = description;
+//     this.assignedTo = assignedTo;
+//     this.dueDate = dueDate;
+//     this.status = status;
+// }
 /************************************ Task 4 ************************************/
 /******************************* Input Validation *******************************/
 // #region
@@ -92,18 +105,42 @@ const clearTaskForm = (form) => {
 
 // #endregion
 
-
 /************************************ Event Listeners ************************************/
 // #region 
+let currentStatus = '';
 
 const displayTaskList = () => {
-    document.querySelector('#tasks').classList.add('d-block');    
-    document.querySelector('#tasks').classList.remove('d-none');    
-    document.querySelector('#create-task').classList.add('d-none');
-    document.querySelector('#create-task').classList.remove('d-block');    
+    // document.querySelector('#tasks').classList.add('d-block');
+    if(document.querySelector('#tasks'))
+        document.querySelector('#tasks').classList.remove('d-none');    
+    if(document.querySelector('#create-task'))
+        document.querySelector('#create-task').classList.add('d-none');
+    // document.querySelector('#create-task').classList.remove('d-block');
 
-    taskList.render();
+    const taskHeader = document.querySelector('#form-select-status');
+    if(taskHeader) {
+        if(taskList.tasks) {
+            if(taskList.tasks.length <= 0)
+                taskHeader.classList.add('d-none');
+            else
+                taskHeader.classList.remove('d-none'); 
+        }
+        else
+            taskHeader.classList.add('d-none');
+    }
+
+    if(currentStatus === 'To Do' || currentStatus === 'In Progress' || 
+        currentStatus === 'Review' || currentStatus === 'Done' ||
+        currentStatus === 'Expired') {
+            selectTasksByStatus(currentStatus);
+    }
+    else {
+        taskList.getAllTasks();
+        taskList.render();
+    }
 };
+
+displayTaskList();
 
 const displayTaskForm = (action, task) => {
     const taskForm = document.forms['task-form']
@@ -115,8 +152,6 @@ const displayTaskForm = (action, task) => {
         if(element.classList.contains('is-invalid'))
             element.classList.remove('is-invalid');
     });
-
-    if(taskForm) clearTaskForm(taskForm);
 
     if(action === 'create')
         taskForm.elements['submit'].value = 'Save';
@@ -131,8 +166,8 @@ const displayTaskForm = (action, task) => {
     }
 
     document.querySelector('#tasks').classList.add('d-none');
-    document.querySelector('#tasks').classList.remove('d-block');
-    document.querySelector('#create-task').classList.add('d-block');
+    // document.querySelector('#tasks').classList.remove('d-block');
+    // document.querySelector('#create-task').classList.add('d-block');
     document.querySelector('#create-task').classList.remove('d-none');
 };
 
@@ -161,14 +196,15 @@ if(taskForm) {
     taskForm.addEventListener('submit', event => {
         event.preventDefault();
 
-        const element = getTaskFormElement();    
-        console.log(element.submit.value)
-        const newTask = validateTaskForm(element.id, element.name, element.description, element.assignedTo, element.dueDate, element.status);
+        const taskForm = getTaskFormElement();
+        const newTask = validateTaskForm(taskForm.id, taskForm.name, taskForm.description, taskForm.assignedTo, taskForm.dueDate, taskForm.status);
         if(newTask) {
-            if(element.submit.value === 'Save')
+            if(taskForm.submit.value === 'Save')
                 taskList.addTask(newTask);
             else
-                taskList.updateTask(element.id.value, newTask);
+                taskList.updateTask(taskForm.id.value, newTask);
+
+            clearTaskForm(taskForm);
 
             displayTaskList();
         }
@@ -192,23 +228,23 @@ if(taskListGroupClick) {
             const taskId = element.parentElement.parentElement.parentElement.parentElement.id;
             element.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
-            taskList.render();
+            displayTaskList();
         }
         else if(element.classList.contains('done-icon')) {
             const taskId = element.parentElement.parentElement.parentElement.parentElement.parentElement.id;
             element.classList.add('invisible');
             taskList.updateTaskStatus(taskId, 'Done');
-            taskList.render();
+            displayTaskList();
         }
         else if(element.classList.contains('delete-button')) {
             const taskId = element.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
-            taskList.render();
+            displayTaskList();
         }
         else if(element.classList.contains('delete-icon')) {
             const taskId = element.parentElement.parentElement.parentElement.parentElement.id;
             taskList.deleteTask(taskId);
-            taskList.render();
+            displayTaskList();
         }
         else if(element.classList.contains('list-group-item') ||
             element.classList.contains('card') || 
@@ -220,7 +256,6 @@ if(taskListGroupClick) {
             element.classList.contains('card-text') ||
             element.classList.contains('card-footer') ||
             element.classList.contains('assigned-to')) {
-
             let task = taskList.getTaskById(getParentElement('list-group-item', element));
             displayTaskForm('update', task);
        }
@@ -240,28 +275,59 @@ if(taskListGroupHover) {
     }, true);
 };
 
+const selectTasksByStatus = status => {
+    let selectedTasks = {};
+
+    const backToGetAllTask = document.querySelector('#back-button');
+    // backToGetAllTask.classList.add('d-block');
+    backToGetAllTask.classList.remove('d-none');
+
+    if(status === 'To Do' || status === 'In Progress' || status === 'Review' || status === 'Done') 
+        selectedTasks = taskList.getAllTasksByStatus(status);
+    else if(status === 'Expired')
+        selectedTasks = taskList.getAllTasksByExpiry();
+    else {
+        currentStatus = '';
+
+        backToGetAllTask.classList.add('d-none');
+        backToGetAllTask.classList.remove('d-block');
+        selectedTasks = taskList.getAllTasks();
+    }
+
+    taskList.render(selectedTasks);
+}
+
 const selectStatusChange = document.querySelector('#select-status');
 if(selectStatusChange) {
     selectStatusChange.addEventListener('change', event => {
-        const selectedStatus = event.target.value;
-        let selectedTasks = {};
-        if(selectedStatus.toLowerCase() === 'expired')
-            selectedTasks = taskList.getAllTasksByExpiry();
-        else
-            selectedTasks = taskList.getAllTasksByStatus(selectedStatus);
-
-        taskList.render(selectedTasks);  
+        currentStatus = event.target.value;
+        selectTasksByStatus(currentStatus);
     }, true);
 };
+
+const backToGetAllTask = document.querySelector('#back-button');
+if(backToGetAllTask) {
+    backToGetAllTask.addEventListener('click', () => {
+        backToGetAllTask.classList.add('d-none');
+        // backToGetAllTask.classList.remove('d-block');
+        
+        let selectDropdown = document.querySelector('#select-status');
+        selectDropdown.selectedIndex = 'Select..';
+        
+        currentStatus = '';
+        selectTasksByStatus('Select..');
+    });
+}
 
 const searchForm = document.forms['search-form'];
 if(searchForm) { 
     searchForm.addEventListener('submit', event => {
         event.preventDefault();
-
+        
         const searchInput = searchForm.querySelector('input').value;
         const selectedTasks = taskList.searchTask(searchInput);
         taskList.render(selectedTasks);
+        searchInput.value = '';
     }, true);
 };
 
@@ -274,8 +340,15 @@ if(searchInput) {
             const searchInput = searchForm.querySelector('input').value;
             const selectedTasks = taskList.searchTask(searchInput);
             taskList.render(selectedTasks);
+            searchInput.value = '';
+        }
+        else if(event.keyCode === 27 || event.key === "Esc") {
+            event.preventDefault();
+            taskList.render();
+            searchInput.value = '';
         }
     }, true);
 };
 
 // #endregion
+
