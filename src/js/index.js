@@ -110,12 +110,10 @@ const clearTaskForm = (form) => {
 let currentStatus = '';
 
 const displayTaskList = () => {
-    // document.querySelector('#tasks').classList.add('d-block');
     if(document.querySelector('#tasks'))
         document.querySelector('#tasks').classList.remove('d-none');    
     if(document.querySelector('#create-task'))
         document.querySelector('#create-task').classList.add('d-none');
-    // document.querySelector('#create-task').classList.remove('d-block');
 
     const taskHeader = document.querySelector('#form-select-status');
     if(taskHeader) {
@@ -156,18 +154,17 @@ const displayTaskForm = (action, task) => {
     if(action === 'create')
         taskForm.elements['submit'].value = 'Save';
     else if(action === 'update') {
+        taskForm.elements['submit'].value = 'Update';
+ 
         taskForm.elements['task-id'].value = task.id;
         taskForm.elements['name'].value = task.name;
         taskForm.elements['description'].value = task.description;
         taskForm.elements['assigned-to'].value = task.assignedTo;
         taskForm.elements['due-date'].value = task.dueDate;
         taskForm.elements['status'].value = task.status;
-        taskForm.elements['submit'].value = 'Update';
     }
 
     document.querySelector('#tasks').classList.add('d-none');
-    // document.querySelector('#tasks').classList.remove('d-block');
-    // document.querySelector('#create-task').classList.add('d-block');
     document.querySelector('#create-task').classList.remove('d-none');
 };
 
@@ -198,10 +195,11 @@ if(taskForm) {
 
         const taskForm = getTaskFormElement();
         const newTask = validateTaskForm(taskForm.id, taskForm.name, taskForm.description, taskForm.assignedTo, taskForm.dueDate, taskForm.status);
+
         if(newTask) {
             if(taskForm.submit.value === 'Save')
                 taskList.addTask(newTask);
-            else
+            else if(taskForm.submit.value === 'Update')
                 taskList.updateTask(taskForm.id.value, newTask);
 
             clearTaskForm(taskForm);
@@ -223,17 +221,18 @@ const getParentElement = (parentClass, currentElement) => {
 const taskListGroupClick = document.querySelector('#task-list');
 if(taskListGroupClick) {
     taskListGroupClick.addEventListener('click', event => {
-        let element = event.target;
+        const element = event.target;
+
         if(element.classList.contains('done-button')) {
             const taskId = element.parentElement.parentElement.parentElement.parentElement.id;
             element.classList.add('invisible');
-            taskList.updateTaskStatus(taskId, 'Done');
+            taskList.updateTaskStatus(taskId);
             displayTaskList();
         }
         else if(element.classList.contains('done-icon')) {
             const taskId = element.parentElement.parentElement.parentElement.parentElement.parentElement.id;
             element.classList.add('invisible');
-            taskList.updateTaskStatus(taskId, 'Done');
+            taskList.updateTaskStatus(taskId);
             displayTaskList();
         }
         else if(element.classList.contains('delete-button')) {
@@ -256,9 +255,10 @@ if(taskListGroupClick) {
             element.classList.contains('card-text') ||
             element.classList.contains('card-footer') ||
             element.classList.contains('assigned-to')) {
-            let task = taskList.getTaskById(getParentElement('list-group-item', element));
-            displayTaskForm('update', task);
-       }
+                const taskId = getParentElement('list-group-item', element)
+                const task = taskList.getTaskById(taskId);
+                displayTaskForm('update', task);
+            }
     }, true);
 };
 

@@ -95,13 +95,12 @@ let TaskManager = class  {
         this.tasks = JSON.parse(localStorage.getItem('TaskList'));
         const lastItem = JSON.parse(localStorage.getItem('TaskList')).pop();
         this.currentId = lastItem ? lastItem.id+1 : 1;
-        console.log(this.currentId)
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
     getTaskById = id => {
         this.getAllTasks();
-        return this.tasks.find(task => task.id === id);
+        return this.tasks.find(task => task.id == id);
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
@@ -119,7 +118,7 @@ let TaskManager = class  {
     // function that find and delete a selected task.  
     deleteTask = id => {
         this.getAllTasks();
-        const selectedIndex = this.tasks.findIndex(task => task.id === id);
+        const selectedIndex = this.tasks.findIndex(task => task.id == id);
         const deletedTask = this.tasks.splice(selectedIndex, selectedIndex >= 0 ? 1 : 0);
         this.saveTask();
 
@@ -128,11 +127,11 @@ let TaskManager = class  {
     }
 
     // function that find and update the status of a selected task.  
-    updateTaskStatus = (id, status) => {
+    updateTaskStatus = (id) => {
         this.getAllTasks();
         this.tasks.map(task => {
-            if(task.id === id)
-                task.status = status;
+            if(task.id == id)
+                task.status = 'Done';
         });
         this.saveTask();
     }
@@ -141,7 +140,7 @@ let TaskManager = class  {
     assignTask = (id, assignee) => {
         this.getAllTasks();
         this.tasks.map(task => {
-            if(task.id === id)
+            if(task.id == id)
                 task.assignedTo = assignee;
         });
         this.saveTask()
@@ -151,7 +150,7 @@ let TaskManager = class  {
     updateTask = (id, task) => {
         this.getAllTasks();
         this.tasks.map(item => {
-            if(item.id === id) {
+            if(item.id == id) {
                 item.name = task.name;
                 item.description = task.description;
                 item.dueDate = task.dueDate;
@@ -198,18 +197,18 @@ let TaskManager = class  {
 const setTaskStatusColor = (dueDate, status) => {
     let taskColor = {}; 
     if(dueDate <= new Date().toISOString().substring(0, 10) && status.replace(/\s/g, '') !== 'Done')
-        taskColor = { color:'danger', rgbaColor:'rgba(217, 83, 79, 0.2)'};
+        taskColor = { color:'danger', rgbaColor:'rgba(217, 83, 79, 0.5)'};
     else if(dueDate > new Date().toISOString().substring(0, 10)) {
         if(status.replace(/\s/g, '') === 'ToDo')
             taskColor = { color:'info', rgbaColor:'rgba(91, 192, 222, 0.5)'};
         else if(status.replace(/\s/g, '') === 'InProgress')
-            taskColor = { color:'primary', rgbaColor:'rgba(2, 117, 216, 0.2)'};
+            taskColor = { color:'primary', rgbaColor:'rgba(2, 117, 216, 0.4)'};
         else if(status.replace(/\s/g, '') === 'Review')
-            taskColor = { color:'warning', rgbaColor:'rgba(240, 173, 78, 0.2)'};
+            taskColor = { color:'warning', rgbaColor:'rgba(240, 173, 78, 0.5)'};
     }
     
     if(status === 'Done')
-        taskColor = { color:'success', rgbaColor:'rgba(92, 184, 92, 0.2)'};
+        taskColor = { color:'success', rgbaColor:'rgba(92, 184, 92, 0.5)'};
 
     return taskColor
 }
@@ -231,7 +230,7 @@ const createTaskHtml = (task) => {
         doneButtonVisibility = task.status === 'Done' ? 'invisible' : 'visible'; 
     
     const taskItemHtml = 
-    `<li id="${task.id}" class="list-group-item list-group-item-action bg-transparent font-weight-bold mb-2 mb-md-4">
+    `<li id="${task.id}" class="list-group-item list-group-item-action bg-transparent mb-2 mb-md-4">
         <div class="card border-${taskColor.color} text-${taskColor.color}" style="background-color:${taskColor.rgbaColor}">
             <div class="card-header bg-transparent pt-1 pb-0 py-md-3">
                 <div class="status d-flex justify-content-between py-0">
