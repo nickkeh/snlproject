@@ -18,7 +18,7 @@ if(rootDiv) {
                 </ul> 
                 <form id="search-form" class="form-inline form-group-sm d-md-block d-none my-2 my-lg-0"> 
                     <input id="search-input" class="form-control input-sm bg-transparent mr-sm-2" type="search" placeholder="Search..." aria-label="Search"> 
-                    <button class="btn btn-sm btn-outline-light my-2 my-sm-0" type="submit">Search</button> 
+                    <button class="btn btn-sm btn-light my-2 my-sm-0" type="submit">Search</button> 
                 </form> 
             </div> 
             <button id="plus-button" class="btn btn-sm rounded-circle d-block d-md-none text-white border ml-2">+</button>
