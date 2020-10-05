@@ -1,6 +1,6 @@
 describe('Task Manager', () => {
     let taskManager;
-    let newTask, updatedTask;
+    let newTask, extraTask, updatedTask;
 
     beforeEach(() => {
         taskManager = new TaskManager();
@@ -13,7 +13,7 @@ describe('Task Manager', () => {
                 expect(taskManager.tasks).toEqual([]);
             });
 
-            it('should set value of "currentId" equals to length of tasks array + 1', () => {
+            it('should set value of "currentId" equals to 1', () => {
                 expect(taskManager.currentId).toEqual(1);
             }); 
         });
@@ -22,6 +22,22 @@ describe('Task Manager', () => {
     describe('#CRUD', () => {
         beforeEach(() => {
             taskManager.addTask(newTask);
+        });
+
+        describe('#searchTask', () => {
+            describe('when a search keyword is passed as parameter', () => {
+                it('should get all tasks that contains the search keyword in lowercase', () => {
+                    // add extra Task, so we have 2 task 
+                    extraTask = new Task('extra task', 'create testing for searching tasks', 'Nick', '2021-01-21', 'Review');
+                    taskManager.addTask(extraTask);
+
+                    const result1 = taskManager.searchTask('Nick')
+                    expect(result1).toEqual([extraTask]);
+
+                    const result2 = taskManager.searchTask('To Do')
+                    expect(result2).toEqual([newTask]);
+                }); 
+            });        
         });
 
         describe('#addTask', () => {
@@ -80,6 +96,10 @@ describe('Task Manager', () => {
                     
                     expect(taskManager.tasks).toEqual(tasks);
                 });
+
+                it('should set value of "currentId" equals to length of tasks array + 1', () => {
+                    expect(taskManager.currentId).toEqual(taskManager.tasks.length+1);
+                }); 
             });
         });
 
