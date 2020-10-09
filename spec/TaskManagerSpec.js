@@ -27,7 +27,7 @@ describe('Task Manager', () => {
         describe('#searchTask', () => {
             describe('when a search keyword is passed as parameter', () => {
                 it('should get all tasks that contains the search keyword in lowercase', () => {
-                    // add extra Task, so we have 2 task 
+                    // add extra Task, so we have 2 tasks for testing purpose
                     extraTask = new Task('extra task', 'create testing for searching tasks', 'Nick', '2021-01-21', 'Review');
                     taskManager.addTask(extraTask);
 
