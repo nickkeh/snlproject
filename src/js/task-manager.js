@@ -93,10 +93,9 @@ let TaskManager = class  {
     // function that retrieves all tasks in the Tasks array.
     getAllTasks = () => {
         this.tasks = JSON.parse(localStorage.getItem('TaskList'));
-        if(this.tasks !== null && this.tasks !== undefined ) {
-            const lastItem = this.tasks.length;
-            this.currentId = lastItem ? lastItem.id+1 : 1;
-        }
+
+        if(this.tasks !== null && this.tasks !== undefined )
+            this.currentId = this.tasks.length > 0 ? this.tasks[this.tasks.length-1].id + 1 : 1;
     }
 
     // function that retrieves only tasks with status that matches the selected status. 
@@ -233,7 +232,7 @@ const createTaskHtml = (task) => {
     
     const taskItemHtml = 
     `<li id="${task.id}" class="list-group-item list-group-item-action bg-transparent shadow mb-2 mb-md-4">
-        <div class="card border-${taskColor.color} text-${taskColor.color}" style="background-color:${taskColor.rgbaColor}">
+        <div class="card border-${taskColor.color} text-dark" style="background-color:${taskColor.rgbaColor}">
             <div class="card-header bg-transparent pt-1 pb-0 py-md-3">
                 <div class="status d-flex justify-content-between py-0">
                     <p class="status">${task.status}</p>                
