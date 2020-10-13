@@ -327,10 +327,11 @@ if(searchForm) {
     searchForm.addEventListener('submit', event => {
         event.preventDefault();
         
-        const searchInput = searchForm.querySelector('input').value;
+        let searchInput = searchForm.querySelector('input').value;
         const selectedTasks = taskList.searchTask(searchInput);
-        taskList.render(selectedTasks);
-        searchInput.value = '';
+        if(selectedTasks) taskList.render(selectedTasks);
+        else alert('No item with "' + searchInput.value + '" is found.');
+        searchInput = '';
     }, true);
 };
 
@@ -340,9 +341,9 @@ if(searchInput) {
         if(event.keyCode === 13 || event.key === "Enter")
         {
             event.preventDefault();
-            const searchInput = searchForm.querySelector('input').value;
-            const selectedTasks = taskList.searchTask(searchInput);
-            taskList.render(selectedTasks);
+            const selectedTasks = taskList.searchTask(searchInput.value);
+            if(selectedTasks) taskList.render(selectedTasks);
+            else alert('No item with "' + searchInput.value + '" is found.');
             searchInput.value = '';
         }
         else if(event.keyCode === 27 || event.key === "Esc") {
