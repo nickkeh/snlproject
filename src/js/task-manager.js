@@ -79,10 +79,11 @@ let TaskManager = class  {
         task.id = this.currentId;
         this.currentId++;
         
-        if(!this.tasks)
+        if(!this.tasks) 
             this.tasks = [];
 
         this.tasks.push(task);
+
         this.saveTask();
     }
 
